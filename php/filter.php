@@ -21,13 +21,13 @@
         if (is_string($filter) && preg_match("/^\/.+\/[a-z]*$/i", $filter)) { //  Test if $filter is regex
             $output['result'] = filter_var($inputSuperglobal[$key], FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>$filter]]);
             $output['success'] = !empty($output['result'] ? true : $output['result']);
-            if (!output['success']) {
+            if (!$output['success']) {
                 $output['errMsg'] = 'key ' . $key . ' has failed against regex filter: ' .$filter;
             }
         } else {
             $output['result'] = filter_var($inputSuperglobal[$key], $filter);
             $output['success'] = !empty($output['result']);
-            if (!output['success']) {
+            if (!$output['success']) {
                 $output['errMsg'] = 'key ' . $key . ' has failed against filter: ' . $filter;
             }
         }
