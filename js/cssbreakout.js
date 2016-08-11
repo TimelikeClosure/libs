@@ -2,7 +2,16 @@
 function CSSBreakout(rootElement) {
 
     var config = {
-        recursive: false
+        recursive: false,
+        inherited: false,
+        filterInclude: {
+            mediaQueries: true,
+            elementStates: false,
+            unusedPseudoElements: false,
+            overwrittenStyleRules: true,
+            overwrittenStyleDeclarations: true,
+            fullSelectorText: true
+        }
     };
     /**
      * Interface for configuration rules list. If no parameter is provided, returns a list of current config options
@@ -27,6 +36,9 @@ function CSSBreakout(rootElement) {
         } else {
 
         }
+
+        //  Get links to style rules for all relevant elements
+
 
     };
 
