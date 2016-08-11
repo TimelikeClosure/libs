@@ -20,6 +20,16 @@ function CSSBreakout(rootElement) {
         }
     };
 
+    this.getStyles = function(ruleList){
+        //  Set up rules for current this.getStyles() call
+        if (ruleList === undefined) {
+            var rules = copyObject(config);
+        } else {
+
+        }
+
+    };
+
     /**
      * copyObject - returns a clone of the given object or array with no shared references
      * @param {Object|Array} originalObject - reference object to clone
