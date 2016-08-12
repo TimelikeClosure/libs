@@ -39,7 +39,8 @@ function CSSBreakout(rootElement) {
         }
 
         //  Get links to style rules for all relevant elements (inclusive)
-
+        var stylesheets = document.styleSheets;
+        console.log("stylesheets: ", stylesheets);
         //  Filter out all overwritten / unused css as configured (exclusive)
 
         //  Format output
@@ -71,3 +72,7 @@ function CSSBreakout(rootElement) {
         return copiedObject;
     }
 }
+
+var element = document.getElementById('test');
+var elementCSS = new CSSBreakout(element);
+elementCSS.getStyles();
