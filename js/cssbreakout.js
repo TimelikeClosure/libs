@@ -11,7 +11,8 @@ function CSSBreakout(rootElement) {
             overwrittenStyleRules: true,
             overwrittenStyleDeclarations: true,
             fullSelectorText: true
-        }
+        },
+        outputFormat: 'javascript'
     };
     /**
      * Interface for configuration rules list. If no parameter is provided, returns a list of current config options
@@ -37,8 +38,13 @@ function CSSBreakout(rootElement) {
 
         }
 
-        //  Get links to style rules for all relevant elements
+        //  Get links to style rules for all relevant elements (inclusive)
 
+        //  Filter out all overwritten / unused css as configured (exclusive)
+
+        //  Format output
+
+        //  Return output
 
     };
 

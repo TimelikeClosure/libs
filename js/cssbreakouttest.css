@@ -1,0 +1,18 @@
+#test * {
+    font-family: "Comic Sans MS", sans-serif;
+}
+ul {
+    font-size: 22px;
+    font-weight: bold;
+}
+li {
+    font-size: 16px;
+    font-weight: normal;
+    cursor: default;
+}
+li.active {
+    text-decoration: underline;
+}
+li:hover {
+    color: darkred;
+}
