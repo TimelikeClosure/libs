@@ -131,9 +131,15 @@ function CSSBreakout() {
              */
 
             function htmlToJs(htmlString){
-                return htmlString.replace(/-([a-z])/i, function(a,b){
-                    var c = b; return c.toUpperCase();
-                });
+                var tempString = "";
+                var jsString = htmlString;
+                while (jsString != tempString){
+                    tempString = jsString;
+                    jsString = tempString.replace(/-([a-z])/i, function(a,b){
+                        var c = b; return c.toUpperCase();
+                    });
+                }
+                return jsString;
             }
 
             /**
@@ -167,7 +173,7 @@ function CSSBreakout() {
             this.declaration = {keyHTML: styleDeclarationListLink[styleDeclarationIndex]};
             this.declaration.keyJS = htmlToJs(this.declaration.keyHTML);
             this.declaration.value = this.listLink[this.declaration.keyJS];
-            console.log("Added style declaration: ", this.declaration.keyHTML + ": " + this.declaration.value + ";");
+            //console.log("Added style declaration: ", this.declaration.keyHTML + ": " + this.declaration.value + ";");
 
             /**
              * End Variable Initialization
@@ -212,7 +218,7 @@ function CSSBreakout() {
             for (var declaration = 0; declaration < this.link.style.length; declaration++){
                 this.declarations.push(new StyleDeclarationTracker(this.link.style, declaration));
             }
-            console.log("Added style rule: ", this.link);
+            //console.log("Added style rule: ", this.link);
 
             /**
              * End Variable Initialization
@@ -257,7 +263,7 @@ function CSSBreakout() {
             for (var rule = 0; rule < this.link.rules.length; rule++){
                 this.rules.push(new StyleRuleTracker(this.link.rules[rule]));
             }
-            console.log("Added stylesheet: ", this.link);
+            //console.log("Added stylesheet: ", this.link);
 
             /**
              * End Variable Initialization

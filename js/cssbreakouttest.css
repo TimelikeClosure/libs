@@ -12,6 +12,7 @@ li {
 }
 li.active {
     text-decoration: underline;
+    border-top-style: groove;
 }
 li:hover {
     color: darkred;
