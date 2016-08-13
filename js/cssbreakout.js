@@ -28,6 +28,24 @@ function CSSBreakout() {
     }
 
     /**
+     * getCombinedOptions - Returns an object that combines the [key] portion of the config and inputOptions object. Any subkeys that exist in both
+     * @param inputOptions
+     * @param key
+     * @returns {Object|Array}
+     */
+    function getCombinedOptions(inputOptions, key){
+        var combinedOptions = copyObject(config[key]);
+        if (inputOptions.hasOwnProperty(key)){
+            for (var option in combinedOptions){
+                if (inputOptions[key].hasOwnProperty(option)){
+                    combinedOptions[option] = inputOptions[key][option];
+                }
+            }
+        }
+        return combinedOptions;
+    }
+
+    /**
      * End Private Methods
      */
 
@@ -147,25 +165,11 @@ function CSSBreakout() {
     this.getCSS = function(targetElement, options = {}){
 
         //  Create the element tree
-        var elementOptions = copyObject(config.elements);
-        if (options.hasOwnProperty('elements')){
-            for (var option in elementOptions){
-                if (options.elements.hasOwnProperty(option)){
-                    elementOptions[option] = options.elements[option];
-                }
-            }
-        }
+        var elementOptions = getCombinedOptions(options, 'elements');
         var elements = new ElementTreeTracker(targetElement, elementOptions);
 
         //  Create the stylesheet tree
-        var styleOptions = copyObject(config.styles);
-        if (options.hasOwnProperty('styles')){
-            for (option in styleOptions){
-                if (options.styles.hasOwnProperty(option)){
-                    styleOptions[option] = options.styles[option];
-                }
-            }
-        }
+        var styleOptions = getCombinedOptions(options, 'styles');
         var sheets = new StyleSheetTreeTracker(styleOptions);
 
         //  Filter in selectors of the stylesheet tree used by the element tree
@@ -175,14 +179,7 @@ function CSSBreakout() {
         elements.filterOverwrittenDeclarations(sheets);
 
         //  Return output
-        var outputOptions = copyObject(config.output);
-        if (options.hasOwnProperty('output')){
-            for (option in outputOptions){
-                if (options.output.hasOwnProperty(option)){
-                    outputOptions[option] = options.output[option];
-                }
-            }
-        }
+        var outputOptions = getCombinedOptions(options, 'output');
         return sheets.output(outputOptions);
     };
 
@@ -206,7 +203,7 @@ function CSSBreakout() {
             overwrittenStyleRules: true,    //  used on filter-out declarations
             overwrittenStyleDeclarations: true, //  used on filter-out declarations
             fullSelectorText: false, //  used on filter-in selectors
-            inline: false   //  used later
+            inline: false   //  used on filter-out declarations
         },
         output: {
             format: 'javascript'
