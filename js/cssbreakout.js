@@ -85,6 +85,11 @@ function CSSBreakout() {
 
         this.targetElement = function(){return targetElement};
 
+
+        this.filterOverwrittenDeclarations = function(styleTree){
+
+        };
+
         /**
          * End Public Methods
          */
@@ -120,7 +125,137 @@ function CSSBreakout() {
          * Begin Constructors
          */
 
+        function StyleDeclarationTracker(styleDeclarationListLink, styleDeclarationIndex){
+            /**
+             * Begin Private Methods
+             */
 
+
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+            this.listLink = styleDeclarationListLink;
+            this.index = styleDeclarationIndex;
+            console.log("Added style declaration: ", this.listLink[this.index]);
+
+            /**
+             * End Variable Initialization
+             */
+        }
+
+        function StyleRuleTracker(styleRuleLink){
+            /**
+             * Begin Private Methods
+             */
+
+
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+            this.link = styleRuleLink;
+            this.declarations = [];
+            for (var declaration = 0; declaration < this.link.style.length; declaration++){
+                this.declarations.push(new StyleDeclarationTracker(this.link.style, declaration));
+            }
+            console.log("Added style rule: ", this.link);
+
+            /**
+             * End Variable Initialization
+             */
+        }
+
+        function StyleSheetTracker(styleSheetLink){
+            /**
+             * Begin Private Methods
+             */
+
+
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+            this.link = styleSheetLink;
+            this.rules = [];
+            for (var rule = 0; rule < this.link.rules.length; rule++){
+                this.rules.push(new StyleRuleTracker(this.link.rules[rule]));
+            }
+            console.log("Added stylesheet: ", this.link);
+
+            /**
+             * End Variable Initialization
+             */
+        }
 
         /**
          * End Constructors
@@ -134,6 +269,10 @@ function CSSBreakout() {
 
         };
 
+        this.output = function(outputOptions){
+
+        };
+
         /**
          * End Public Methods
          */
@@ -142,6 +281,14 @@ function CSSBreakout() {
          * Begin Variable Initialization
          */
 
+        var sheetList = {
+            link: document.styleSheets,
+            sheets: []
+        };
+        for (var sheet = 0; sheet < sheetList.link.length; sheet++){
+            sheetList.sheets.push(new StyleSheetTracker(sheetList.link[sheet]));
+        }
+        console.log("Added stylesheet tree: ", sheetList);
 
         /**
          * End Variable Initialization
@@ -200,9 +347,9 @@ function CSSBreakout() {
             mediaQueries: true, //  used on construction
             elementStates: false,   //  used on construction
             unusedPseudoElements: false,    //  used on filter-in selectors
+            fullSelectorText: false, //  used on filter-in selectors
             overwrittenStyleRules: true,    //  used on filter-out declarations
             overwrittenStyleDeclarations: true, //  used on filter-out declarations
-            fullSelectorText: false, //  used on filter-in selectors
             inline: false   //  used on filter-out declarations
         },
         output: {
