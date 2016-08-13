@@ -10,9 +10,10 @@ function CSSBreakout() {
             mediaQueries: true, //  used on construction
             elementStates: false,   //  used on construction
             unusedPseudoElements: false,    //  used on filter-in selectors
-            overwrittenStyleRules: true,    //  used later
-            overwrittenStyleDeclarations: true, //  used later
-            fullSelectorText: false //  used on filter-in selectors
+            overwrittenStyleRules: true,    //  used on filter-out declarations
+            overwrittenStyleDeclarations: true, //  used on filter-out declarations
+            fullSelectorText: false, //  used on filter-in selectors
+            inline: false   //  used later
         },
         output: {
             format: 'javascript'
@@ -102,6 +103,12 @@ function CSSBreakout() {
 
     }
 
+    /**
+     * this.getCSS - returns all css rules and declarations based upon provided option values (if provided) or defaults (if not).
+     * @param {Element} targetElement - element to use as the base for all styles
+     * @param {Object} [options] - one-time configuration object
+     * @returns {*|{format}}
+     */
     this.getCSS = function(targetElement, options = {}){
 
         //  Create the element tree
@@ -128,7 +135,6 @@ function CSSBreakout() {
 
         //  Filter in selectors of the stylesheet tree used by the element tree
         sheets.filterUsedSelectors(elements);
-        sheets.addInlineStyles(elements);   //  Add in inline styling?
 
         //  Filter out declarations overwritten by other declarations
         elements.filterOverwrittenDeclarations(sheets);
