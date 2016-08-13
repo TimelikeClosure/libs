@@ -1,64 +1,8 @@
 
 function CSSBreakout() {
-
-    var config = {
-        elements: {
-            inherited: false,   //  used on construction
-            descendants: false  //  used on construction
-        },
-        styles: {
-            mediaQueries: true, //  used on construction
-            elementStates: false,   //  used on construction
-            unusedPseudoElements: false,    //  used on filter-in selectors
-            overwrittenStyleRules: true,    //  used on filter-out declarations
-            overwrittenStyleDeclarations: true, //  used on filter-out declarations
-            fullSelectorText: false, //  used on filter-in selectors
-            inline: false   //  used later
-        },
-        output: {
-            format: 'javascript'
-        }
-    };
-    ///**
-    // * Interface for configuration rules list. If no parameter is provided, returns a list of current config options
-    // * @param {Object|undefined} ruleList
-    // * @returns {Object|boolean}
-    // */
-    //this.config = function(ruleList){
-    //    if (ruleList === undefined) {
-    //        return copyObject(config);
-    //    }
-    //    for (var rule in ruleList){
-    //        if (ruleList.hasOwnProperty(rule) && config.hasOwnProperty(rule)){
-    //            config[rule] = ruleList[rule];
-    //        }
-    //    }
-    //};
-    //
-    //this.getStyles = function(ruleList){
-    //    //  Set up rules for current this.getStyles() call
-    //    if (ruleList === undefined) {
-    //        var rules = copyObject(config);
-    //    } else {
-    //        var currentConfig = copyObject(config);
-    //        this.config(ruleList);
-    //        rules = copyObject(config);
-    //        config = currentConfig;
-    //    }
-    //
-    //    var includedStyleSheetRules = new StyleSheetTracker(targetElement);
-    //
-    //    //  Get links to style rules for all relevant elements (inclusive)
-    //    includedStyleSheetRules.getIncludedRules(targetElement);
-    //    console.log("includedStyleSheetRules: ", includedStyleSheetRules);
-    //    //  Filter out all overwritten / unused css as configured (exclusive)
-    //
-    //    //  Format output
-    //
-    //    //  Return output
-    //
-    //};
-
+    /**
+     * Begin Private Methods
+     */
 
     /**
      * copyObject - returns a clone of the given object or array with no shared references
@@ -84,13 +28,58 @@ function CSSBreakout() {
     }
 
     /**
+     * End Private Methods
+     */
+
+    /**
+     * Begin Constructors
+     */
+
+    /**
      * ElementTreeTracker - constructs an object representing all elements
      * @param targetElement
      * @param options
      * @constructor
      */
     function ElementTreeTracker(targetElement, options){
+        /**
+         * Begin Private Methods
+         */
+
+
+
+        /**
+         * End Private Methods
+         */
+
+        /**
+         * Begin Constructors
+         */
+
+
+        /**
+         * End Constructors
+         */
+
+        /**
+         * Begin Public Methods
+         */
+
         this.targetElement = function(){return targetElement};
+
+        /**
+         * End Public Methods
+         */
+
+        /**
+         * Begin Variable Initialization
+         */
+
+
+
+        /**
+         * End Variable Initialization
+         */
     }
 
     /**
@@ -99,9 +88,55 @@ function CSSBreakout() {
      * @constructor
      */
     function StyleSheetTreeTracker(options){
+        /**
+         * Begin Private Methods
+         */
 
 
+
+        /**
+         * End Private Methods
+         */
+
+        /**
+         * Begin Constructors
+         */
+
+
+
+        /**
+         * End Constructors
+         */
+
+        /**
+         * Begin Public Methods
+         */
+
+        this.filterUsedSelectors = function(elementTree){
+
+        };
+
+        /**
+         * End Public Methods
+         */
+
+        /**
+         * Begin Variable Initialization
+         */
+
+
+        /**
+         * End Variable Initialization
+         */
     }
+
+    /**
+     * End Constructors
+     */
+
+    /**
+     * Begin Public Methods
+     */
 
     /**
      * this.getCSS - returns all css rules and declarations based upon provided option values (if provided) or defaults (if not).
@@ -150,6 +185,37 @@ function CSSBreakout() {
         }
         return sheets.output(outputOptions);
     };
+
+    /**
+     * End Public Methods
+     */
+
+    /**
+     * Begin Variable Initialization
+     */
+
+    var config = {
+        elements: {
+            inherited: false,   //  used on construction
+            descendants: false  //  used on construction
+        },
+        styles: {
+            mediaQueries: true, //  used on construction
+            elementStates: false,   //  used on construction
+            unusedPseudoElements: false,    //  used on filter-in selectors
+            overwrittenStyleRules: true,    //  used on filter-out declarations
+            overwrittenStyleDeclarations: true, //  used on filter-out declarations
+            fullSelectorText: false, //  used on filter-in selectors
+            inline: false   //  used later
+        },
+        output: {
+            format: 'javascript'
+        }
+    };
+
+    /**
+     * End Variable Initialization
+     */
 }
 
 var element = document.getElementById('test');
