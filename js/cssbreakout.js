@@ -74,6 +74,45 @@ function CSSBreakout() {
          * Begin Constructors
          */
 
+        function ElementTracker(elementLink){
+            /**
+             * Begin Private Methods
+             */
+
+
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+
+
+            /**
+             * End Variable Initialization
+             */
+        }
 
         /**
          * End Constructors
@@ -82,9 +121,6 @@ function CSSBreakout() {
         /**
          * Begin Public Methods
          */
-
-        this.targetElement = function(){return targetElement};
-
 
         this.filterOverwrittenDeclarations = function(styleTree){
 
@@ -98,7 +134,20 @@ function CSSBreakout() {
          * Begin Variable Initialization
          */
 
-
+        var elementList = {
+            links: {
+                target: targetElement
+            },
+            elements: {
+                target: new ElementTracker(targetElement),
+                current: this.target
+            }
+        };
+        if (options.inherited){
+            elementList.links.root = document.body.parentNode;
+        } else {
+            elementList.links.root = targetElement;
+        }
 
         /**
          * End Variable Initialization
