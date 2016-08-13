@@ -1,0 +1,17 @@
+#test *:not(.active) {
+    font-family: "Calibri", Courier, sans-serif;
+}
+ul, ol {
+    font-style: oblique;
+}
+li {
+    cursor: pointer;
+}
+li.active {
+    text-decoration: underline;
+    background-color: orange;
+}
+li:hover {
+    color: darkred;
+    background-color: yellow;
+}
