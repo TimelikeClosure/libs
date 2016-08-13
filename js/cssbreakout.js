@@ -130,7 +130,11 @@ function CSSBreakout() {
              * Begin Private Methods
              */
 
-
+            function htmlToJs(htmlString){
+                return htmlString.replace(/-([a-z])/i, function(a,b){
+                    var c = b; return c.toUpperCase();
+                });
+            }
 
             /**
              * End Private Methods
@@ -160,7 +164,10 @@ function CSSBreakout() {
 
             this.listLink = styleDeclarationListLink;
             this.index = styleDeclarationIndex;
-            console.log("Added style declaration: ", this.listLink[this.index]);
+            this.declaration = {keyHTML: styleDeclarationListLink[styleDeclarationIndex]};
+            this.declaration.keyJS = htmlToJs(this.declaration.keyHTML);
+            this.declaration.value = this.listLink[this.declaration.keyJS];
+            console.log("Added style declaration: ", this.declaration.keyHTML + ": " + this.declaration.value + ";");
 
             /**
              * End Variable Initialization
