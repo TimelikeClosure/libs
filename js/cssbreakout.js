@@ -3,18 +3,20 @@ function CSSBreakout() {
 
     var config = {
         elements: {
-            inherited: false,
-            descendants: false
+            inherited: false,   //  used on construction
+            descendants: false  //  used on construction
         },
         styles: {
-            mediaQueries: true,
-            elementStates: false,
-            unusedPseudoElements: false,
-            overwrittenStyleRules: true,
-            overwrittenStyleDeclarations: true,
-            fullSelectorText: false
+            mediaQueries: true, //  used on construction
+            elementStates: false,   //  used on construction
+            unusedPseudoElements: false,    //  used on filter-in selectors
+            overwrittenStyleRules: true,    //  used later
+            overwrittenStyleDeclarations: true, //  used later
+            fullSelectorText: false //  used on filter-in selectors
         },
-        outputFormat: 'javascript'
+        output: {
+            format: 'javascript'
+        }
     };
     ///**
     // * Interface for configuration rules list. If no parameter is provided, returns a list of current config options
@@ -80,67 +82,28 @@ function CSSBreakout() {
         return copiedObject;
     }
 
-    function ElementTreeTracker(targetElement, options = config.filter.elements){
+    /**
+     * ElementTreeTracker - constructs an object representing all elements
+     * @param targetElement
+     * @param options
+     * @constructor
+     */
+    function ElementTreeTracker(targetElement, options){
         this.targetElement = function(){return targetElement};
     }
 
     /**
      * StyleSheetTracker - constructs an object representing all stylesheets, rules, and declarations
-     * @param targetElement
+     * @param {Object} options - list of stylesheet options
      * @constructor
      */
     function StyleSheetTreeTracker(options){
-        var styleSheetList = document.styleSheets;
-        this.elements = {};
-        this.sheets = [];
-        for (var sheet = 0; sheet < styleSheetList.length; sheet++){
-            console.log("Adding sheet: ", styleSheetList[sheet]);
-            this.sheets.push(new StyleRuleTracker(styleSheetList[sheet]));
-        }
-
-        function StyleRuleTracker (styleSheet){
-            this.link = styleSheet;
-            this.rules = new Array(styleSheet.rules.length);
-        }
-
-        function StyleDeclarationTracker (styleRule){
-
-        }
-
-        /**
-         * getSelectedRules - Adds all rules that select the given element to includedRules.
-         * @param {Element} element
-         * @param {Object} includedRules
-         * @param {Object} styleSheets
-         * @returns {boolean}
-         */
-        function getSelectedRules(element, includedRules, styleSheets){
-
-            //  Check each stylesheet in order
-            for (var sheet = 0; sheet < styleSheets.length; sheet++){
-                console.log("stylesheet # " + sheet + ": ", styleSheets[sheet]);
-            }
-
-            return true;
-        }
-
-        this.getIncludedRules = function(targetElement){
-            var docStyleSheets = document.styleSheets;
-            console.log("stylesheets: ", docStyleSheets);
-            //  initialize includedStyleSheetRules
 
 
-            //  Get style rules applied directly to targetElement
-            getSelectedRules(targetElement);
-            //  Get style rules applied indirectly to targetElement through inheritance if necessary
-
-            //  Get style rules applied to targetElement's descendants if necessary
-
-            return includedStyleSheetRules;
-        };
     }
 
-    this.getCSSTree = function(targetElement, options = {}){
+    this.getCSS = function(targetElement, options = {}){
+
         //  Create the element tree
         var elementOptions = copyObject(config.elements);
         if (options.hasOwnProperty('elements')){
@@ -151,6 +114,7 @@ function CSSBreakout() {
             }
         }
         var elements = new ElementTreeTracker(targetElement, elementOptions);
+
         //  Create the stylesheet tree
         var styleOptions = copyObject(config.styles);
         if (options.hasOwnProperty('styles')){
@@ -160,10 +124,28 @@ function CSSBreakout() {
                 }
             }
         }
-        var sheets = new StyleSheetTreeTracker();
+        var sheets = new StyleSheetTreeTracker(styleOptions);
+
+        //  Filter in selectors of the stylesheet tree used by the element tree
+        sheets.filterUsedSelectors(elements);
+        sheets.addInlineStyles(elements);   //  Add in inline styling?
+
+        //  Filter out declarations overwritten by other declarations
+        elements.filterOverwrittenDeclarations(sheets);
+
+        //  Return output
+        var outputOptions = copyObject(config.output);
+        if (options.hasOwnProperty('output')){
+            for (option in outputOptions){
+                if (options.output.hasOwnProperty(option)){
+                    outputOptions[option] = options.output[option];
+                }
+            }
+        }
+        return sheets.output(outputOptions);
     };
 }
 
 var element = document.getElementById('test');
-var elementCSS = new CSSBreakout(element);
-elementCSS.getStyles();
+var elementCSS = new CSSBreakout();
+elementCSS.getCSS(element);
