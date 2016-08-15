@@ -383,7 +383,7 @@ function CSSBreakout() {
                         if (rule instanceof CSSStyleRule){  //  if rule is a style, add tracker for it
                             rulesTrackerList.push(new StyleRuleTracker(rule));
                         } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
-                            if (window.matchMedia(rule.media.mediaText)){ //  and if media query is active, add included rules
+                            if (window.matchMedia(rule.media.mediaText).matches){ //  and if media query is active, add included rules
                                 addRulesToList(rule.cssRules, rulesTrackerList);
                             }
                         } else {
