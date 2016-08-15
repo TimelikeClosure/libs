@@ -7,11 +7,13 @@ ul, ol {
 li {
     cursor: pointer;
 }
-li.active {
-    text-decoration: underline;
-    background-color: orange;
-}
-li:hover {
-    color: darkred;
-    background-color: yellow;
+@media (min-width: 769px){
+    li.active {
+        text-decoration: underline;
+        background-color: orange;
+    }
+    li:hover {
+        color: darkred;
+        background-color: yellow;
+    }
 }

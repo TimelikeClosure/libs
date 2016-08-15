@@ -302,12 +302,97 @@ function CSSBreakout() {
              */
         }
 
+        function MediaRuleTracker(mediaRuleLink){
+            /**
+             * Begin Private Methods
+             */
+
+            function addRulesToList(originalRulesList, rulesTrackerList){
+                for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
+                    var rule = originalRulesList[ruleIndex];
+                    if (rule instanceof CSSStyleRule){  //  if rule is a style, add tracker for it
+                        rulesTrackerList.push(new StyleRuleTracker(rule));
+                    } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
+                        rulesTrackerList.push(new MediaRuleTracker(rule, addRulesToList));
+                    } else {
+                        rulesTrackerList.push(null);
+                        console.log('Warning, invalid rule type: ', rule);
+                    }
+                }
+            }
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+            this.link = mediaRuleLink;
+            this.rules = [];
+            addRulesToList(this.link.cssRules, this.rules);
+
+            /**
+             * End Variable Initialization
+             */
+        }
+
         function StyleSheetTracker(styleSheetLink){
             /**
              * Begin Private Methods
              */
 
-
+            var addRulesToList;
+            if (options.preserveMediaQueries){
+                addRulesToList = function(originalRulesList, rulesTrackerList){
+                    for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
+                        var rule = originalRulesList[ruleIndex];
+                        if (rule instanceof CSSStyleRule){  //  if rule is a style, add tracker for it
+                            rulesTrackerList.push(new StyleRuleTracker(rule));
+                        } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
+                            rulesTrackerList.push(new MediaRuleTracker(rule));
+                        } else {
+                            rulesTrackerList.push(null);
+                            console.log('Warning, invalid rule type: ', rule);
+                        }
+                    }
+                }
+            } else {
+                addRulesToList = function(originalRulesList, rulesTrackerList){
+                    for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
+                        var rule = originalRulesList[ruleIndex];
+                        if (rule instanceof CSSStyleRule){  //  if rule is a style, add tracker for it
+                            rulesTrackerList.push(new StyleRuleTracker(rule));
+                        } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
+                            if (window.matchMedia(rule.media.mediaText)){ //  and if media query is active, add included rules
+                                addRulesToList(rule.cssRules, rulesTrackerList);
+                            }
+                        } else {
+                            rulesTrackerList.push(null);
+                            console.log('Warning, invalid rule type: ', rule);
+                        }
+                    }
+                }
+            }
 
             /**
              * End Private Methods
@@ -337,9 +422,7 @@ function CSSBreakout() {
 
             this.link = styleSheetLink;
             this.rules = [];
-            for (var rule = 0; rule < this.link.rules.length; rule++){
-                this.rules.push(new StyleRuleTracker(this.link.rules[rule]));
-            }
+            addRulesToList(this.link.rules, this.rules);
 
             /**
              * End Variable Initialization
@@ -433,8 +516,8 @@ function CSSBreakout() {
             descendants: false  //  used on construction
         },
         styles: {
-            mediaQueries: true, //  used on construction
-            elementStates: false,   //  used on construction
+            preserveMediaQueries: true, //  used on construction
+            preserveElementStates: false,   //  used on construction
             unusedPseudoElements: false,    //  used on filter-in selectors
             fullSelectorText: false, //  used on filter-in selectors
             overwrittenStyleRules: true,    //  used on filter-out declarations
