@@ -302,58 +302,60 @@ function CSSBreakout() {
              */
         }
 
-        function MediaRuleTracker(mediaRuleLink){
-            /**
-             * Begin Private Methods
-             */
+        if (options.preserveMediaQueries){
+            var MediaRuleTracker = function(mediaRuleLink){
+                /**
+                 * Begin Private Methods
+                 */
 
-            function addRulesToList(originalRulesList, rulesTrackerList){
-                for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
-                    var rule = originalRulesList[ruleIndex];
-                    if (rule instanceof CSSStyleRule){  //  if rule is a style, add tracker for it
-                        rulesTrackerList.push(new StyleRuleTracker(rule));
-                    } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
-                        rulesTrackerList.push(new MediaRuleTracker(rule, addRulesToList));
-                    } else {
-                        rulesTrackerList.push(null);
-                        console.log('Warning, invalid rule type: ', rule);
+                function addRulesToList(originalRulesList, rulesTrackerList){
+                    for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
+                        var rule = originalRulesList[ruleIndex];
+                        if (rule instanceof CSSStyleRule){  //  if rule is a style, add tracker for it
+                            rulesTrackerList.push(new StyleRuleTracker(rule));
+                        } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
+                            rulesTrackerList.push(new MediaRuleTracker(rule, addRulesToList));
+                        } else {
+                            rulesTrackerList.push(null);
+                            console.log('Warning, invalid rule type: ', rule);
+                        }
                     }
                 }
-            }
 
-            /**
-             * End Private Methods
-             */
+                /**
+                 * End Private Methods
+                 */
 
-            /**
-             * Begin Constructors
-             */
-
-
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
+                /**
+                 * Begin Constructors
+                 */
 
 
-            /**
-             * End Public Methods
-             */
+                /**
+                 * End Constructors
+                 */
 
-            /**
-             * Begin Variable Initialization
-             */
+                /**
+                 * Begin Public Methods
+                 */
 
-            this.link = mediaRuleLink;
-            this.rules = [];
-            addRulesToList(this.link.cssRules, this.rules);
 
-            /**
-             * End Variable Initialization
-             */
+                /**
+                 * End Public Methods
+                 */
+
+                /**
+                 * Begin Variable Initialization
+                 */
+
+                this.link = mediaRuleLink;
+                this.rules = [];
+                addRulesToList(this.link.cssRules, this.rules);
+
+                /**
+                 * End Variable Initialization
+                 */
+            };
         }
 
         function StyleSheetTracker(styleSheetLink){
