@@ -108,6 +108,14 @@ function CSSBreakout() {
                 return this.parent.getRootElement();
             };
 
+            this.getDescendantElements = function(){
+                var childCount = this.link.children.length;
+                for (var childIndex = 0; childIndex < childCount; childIndex++){
+                    this.children.push(new ChildElementTracker(this, childIndex));
+                    this.children[childIndex].getDescendantElements();
+                }
+            };
+
             /**
              * End Public Methods
              */
@@ -119,7 +127,6 @@ function CSSBreakout() {
             this.link = elementLink;
             this.parent = null;
             this.children = [];
-            console.log("Added element: ", this.link);
 
             /**
              * End Variable Initialization
@@ -129,13 +136,11 @@ function CSSBreakout() {
         function ParentElementTracker(childElementTracker){
             ElementTracker.call(this, childElementTracker.link.parentElement);
             this.children.push(childElementTracker);
-            console.log("as a parent of: ", this.children[0]);
         }
 
         function ChildElementTracker(parentElementTracker, childIndex){
             ElementTracker.call(this, parentElementTracker.link.children[childIndex]);
-            this.parent.push(parentElementTracker);
-            console.log("as child # "+childIndex+" of: ", this.parent);
+            this.parent = parentElementTracker;
         }
 
         /**
@@ -170,7 +175,7 @@ function CSSBreakout() {
         }
         //  Add descendant elements, if applicable
         if (options.descendants){
-
+            elementList.target.getDescendantElements();
         }
         console.log("Added element tree: ", elementList);
 
@@ -247,7 +252,6 @@ function CSSBreakout() {
             this.declaration = {keyHTML: styleDeclarationListLink[styleDeclarationIndex]};
             this.declaration.keyJS = htmlToJs(this.declaration.keyHTML);
             this.declaration.value = this.listLink[this.declaration.keyJS];
-            //console.log("Added style declaration: ", this.declaration.keyHTML + ": " + this.declaration.value + ";");
 
             /**
              * End Variable Initialization
@@ -292,7 +296,6 @@ function CSSBreakout() {
             for (var declaration = 0; declaration < this.link.style.length; declaration++){
                 this.declarations.push(new StyleDeclarationTracker(this.link.style, declaration));
             }
-            //console.log("Added style rule: ", this.link);
 
             /**
              * End Variable Initialization
@@ -337,7 +340,6 @@ function CSSBreakout() {
             for (var rule = 0; rule < this.link.rules.length; rule++){
                 this.rules.push(new StyleRuleTracker(this.link.rules[rule]));
             }
-            //console.log("Added stylesheet: ", this.link);
 
             /**
              * End Variable Initialization
