@@ -1,5 +1,6 @@
 
 function CSSBreakout() {
+    "use strict";
     /**
      * Begin Private Methods
      */
@@ -258,6 +259,46 @@ function CSSBreakout() {
              */
         }
 
+        function StyleSelectorTracker(selectorOriginalString){
+            /**
+             * Begin Private Methods
+             */
+
+
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+            this.originalText = selectorOriginalString.trim();
+
+            /**
+             * End Variable Initialization
+             */
+        }
+
         function StyleRuleTracker(styleRuleLink){
             /**
              * Begin Private Methods
@@ -292,6 +333,15 @@ function CSSBreakout() {
              */
 
             this.link = styleRuleLink;
+            this.selectors = [];
+            if (options.fullSelectorText){
+                var selectorList = [this.link.selectorText];
+            } else {
+                selectorList = this.link.selectorText.split(',');
+            }
+            for (var selector = 0; selector < selectorList.length; selector++){
+                this.selectors.push(new StyleSelectorTracker(selectorList[selector]));
+            }
             this.declarations = [];
             for (var declaration = 0; declaration < this.link.style.length; declaration++){
                 this.declarations.push(new StyleDeclarationTracker(this.link.style, declaration));
@@ -514,14 +564,14 @@ function CSSBreakout() {
 
     var config = {
         elements: {
-            inherited: false,   //  used on construction
-            descendants: false  //  used on construction
+            inherited: true,   //  check for inherited properties on the target element
+            descendants: true  //  check for properties affecting any of target element's children
         },
         styles: {
-            preserveMediaQueries: true, //  used on construction
+            preserveMediaQueries: true, //  preserve media queries instead of selecting currently applied media queries inside media queries
             preserveElementStates: false,   //  used on construction
+            fullSelectorText: false, //  preserve full list of selectors instead of filtering out unused ones
             unusedPseudoElements: false,    //  used on filter-in selectors
-            fullSelectorText: false, //  used on filter-in selectors
             overwrittenStyleRules: true,    //  used on filter-out declarations
             overwrittenStyleDeclarations: true, //  used on filter-out declarations
             inline: false   //  used on filter-out declarations

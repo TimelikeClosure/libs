@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", function(){
             descendants: false
         },
         styles: {
-            preserveMediaQueries: false
+            preserveMediaQueries: false,
+            fullSelectorText: true
         }
     });
 });
