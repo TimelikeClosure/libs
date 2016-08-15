@@ -98,6 +98,15 @@ function CSSBreakout() {
              * Begin Public Methods
              */
 
+            this.getRootElement = function(){
+                //  Base case: element is root element
+                if (this.link === document.body.parentNode){
+                    return this;
+                }
+                //  Recursive case: element is not root element
+                this.parent = new ParentElementTracker(this);
+                return this.parent.getRootElement();
+            };
 
             /**
              * End Public Methods
@@ -107,11 +116,26 @@ function CSSBreakout() {
              * Begin Variable Initialization
              */
 
-
+            this.link = elementLink;
+            this.parent = null;
+            this.children = [];
+            console.log("Added element: ", this.link);
 
             /**
              * End Variable Initialization
              */
+        }
+
+        function ParentElementTracker(childElementTracker){
+            ElementTracker.call(this, childElementTracker.link.parentElement);
+            this.children.push(childElementTracker);
+            console.log("as a parent of: ", this.children[0]);
+        }
+
+        function ChildElementTracker(parentElementTracker, childIndex){
+            ElementTracker.call(this, parentElementTracker.link.children[childIndex]);
+            this.parent.push(parentElementTracker);
+            console.log("as child # "+childIndex+" of: ", this.parent);
         }
 
         /**
@@ -134,20 +158,21 @@ function CSSBreakout() {
          * Begin Variable Initialization
          */
 
+        //  Create base object for referencing important ElementTrackers
+        //  Add target element
         var elementList = {
-            links: {
-                target: targetElement
-            },
-            elements: {
-                target: new ElementTracker(targetElement),
-                current: this.target
-            }
+            target: new ElementTracker(targetElement)
         };
+        elementList.root = elementList.target;
+        //  Add inherited elements, if applicable
         if (options.inherited){
-            elementList.links.root = document.body.parentNode;
-        } else {
-            elementList.links.root = targetElement;
+            elementList.root = elementList.target.getRootElement();
         }
+        //  Add descendant elements, if applicable
+        if (options.descendants){
+
+        }
+        console.log("Added element tree: ", elementList);
 
         /**
          * End Variable Initialization
@@ -423,7 +448,3 @@ function CSSBreakout() {
      * End Variable Initialization
      */
 }
-
-var element = document.getElementById('test');
-var elementCSS = new CSSBreakout();
-elementCSS.getCSS(element);
