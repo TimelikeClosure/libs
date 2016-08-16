@@ -1,9 +1,23 @@
-
 function CSSBreakout() {
     "use strict";
     /**
      * Begin Private Methods
      */
+
+    if (!Element.prototype.matches) {
+        Element.prototype.matches =
+            Element.prototype.matchesSelector ||
+            Element.prototype.mozMatchesSelector ||
+            Element.prototype.msMatchesSelector ||
+            Element.prototype.oMatchesSelector ||
+            Element.prototype.webkitMatchesSelector ||
+            function(s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                    i = matches.length;
+                while (--i >= 0 && matches.item(i) !== this) {}
+                return i > -1;
+            };
+    }
 
     /**
      * copyObject - returns a clone of the given object or array with no shared references
@@ -99,21 +113,35 @@ function CSSBreakout() {
              * Begin Public Methods
              */
 
-            this.getRootElement = function(){
+            this.setRootElement = function(){
                 //  Base case: element is root element
                 if (this.link === document.body.parentNode){
                     return this;
                 }
                 //  Recursive case: element is not root element
                 this.parent = new ParentElementTracker(this);
-                return this.parent.getRootElement();
+                return this.parent.setRootElement();
             };
 
-            this.getDescendantElements = function(){
+            this.setDescendantElements = function(){
                 var childCount = this.link.children.length;
                 for (var childIndex = 0; childIndex < childCount; childIndex++){
                     this.children.push(new ChildElementTracker(this, childIndex));
-                    this.children[childIndex].getDescendantElements();
+                    this.children[childIndex].setDescendantElements();
+                }
+            };
+
+            this.getDOMElement = function(){
+                return this.link;
+            };
+
+            this.addSelector = function(selector){
+                if (this.link.matches(selector.getSearchText())){
+                    this.selectors.push(selector);
+                    selector.addElement(this);
+                }
+                for (var childIndex = 0; childIndex < this.children.length; childIndex++){
+                    this.children[childIndex].addSelector(selector);
                 }
             };
 
@@ -128,6 +156,7 @@ function CSSBreakout() {
             this.link = elementLink;
             this.parent = null;
             this.children = [];
+            this.selectors = [];
 
             /**
              * End Variable Initialization
@@ -152,6 +181,10 @@ function CSSBreakout() {
          * Begin Public Methods
          */
 
+        this.addSelector = function(selector){
+            elementList.root.addSelector(selector);
+        };
+
         this.filterOverwrittenDeclarations = function(styleTree){
 
         };
@@ -172,11 +205,11 @@ function CSSBreakout() {
         elementList.root = elementList.target;
         //  Add inherited elements, if applicable
         if (options.inherited){
-            elementList.root = elementList.target.getRootElement();
+            elementList.root = elementList.target.setRootElement();
         }
         //  Add descendant elements, if applicable
         if (options.descendants){
-            elementList.target.getDescendantElements();
+            elementList.target.setDescendantElements();
         }
         console.log("Added element tree: ", elementList);
 
@@ -270,7 +303,7 @@ function CSSBreakout() {
             //    return specficity;
             //}
 
-            function getSearchText(originalText){
+            function setSearchText(originalText){
 
                 var removeSelectorPortions = [];
                 if (options.preservePseudoElements){
@@ -303,8 +336,18 @@ function CSSBreakout() {
              * Begin Public Methods
              */
 
-            this.findSelectedElements = function(elementTree){
+            this.getSearchText = function(){
+                return this.searchText;
+            };
 
+            this.addElement = function(element){
+                if (element.getDOMElement().matches(this.searchText)){
+                    this.elements.push(element);
+                }
+            };
+
+            this.findSelectedElements = function(elementTree){
+                elementTree.addSelector(this);
             };
 
             /**
@@ -317,7 +360,8 @@ function CSSBreakout() {
 
             this.originalText = selectorOriginalString.trim();
             //this.specificity = getSpecificity(this.originalText);
-            this.searchText = getSearchText(this.originalText);
+            this.searchText = setSearchText(this.originalText);
+            this.elements = [];
 
 
             /**
@@ -610,7 +654,7 @@ function CSSBreakout() {
         },
         styles: {
             preserveMediaQueries: true, //  preserve media query blocks instead of selecting rules inside currently applied media queries
-            preservePseudoElements: false,    //  preserve pseudo elements
+            preservePseudoElements: true,    //  preserve pseudo elements
             preserveElementStates: true,   //  preserve element state selectors instead of selecting currently applied states
             overwrittenStyleRules: true,    //  used on filter-out declarations
             overwrittenStyleDeclarations: true, //  used on filter-out declarations
