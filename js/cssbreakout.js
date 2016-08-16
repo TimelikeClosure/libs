@@ -264,7 +264,20 @@ function CSSBreakout() {
              * Begin Private Methods
              */
 
+            function getSpecificity(originalText){
+                var specficity = [0, 0, 0];
 
+                return specficity;
+            }
+
+            function getSearchText(originalText){
+                var reducedText = originalText;
+                if (reducedText == originalText){   //  base case
+                    return reducedText;
+                } else {    //  recursive case
+                    return getSearchText(reducedText);
+                }
+            }
 
             /**
              * End Private Methods
@@ -293,6 +306,9 @@ function CSSBreakout() {
              */
 
             this.originalText = selectorOriginalString.trim();
+            this.specificity = getSpecificity(this.originalText);
+            this.searchText = getSearchText(this.originalText);
+
 
             /**
              * End Variable Initialization
@@ -570,8 +586,8 @@ function CSSBreakout() {
         styles: {
             preserveMediaQueries: true, //  preserve media queries instead of selecting currently applied media queries inside media queries
             preserveElementStates: false,   //  used on construction
+            unusedPseudoElements: false,    //  used on construction
             fullSelectorText: false, //  preserve full list of selectors instead of filtering out unused ones
-            unusedPseudoElements: false,    //  used on filter-in selectors
             overwrittenStyleRules: true,    //  used on filter-out declarations
             overwrittenStyleDeclarations: true, //  used on filter-out declarations
             inline: false   //  used on filter-out declarations

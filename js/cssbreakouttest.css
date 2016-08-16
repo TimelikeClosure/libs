@@ -5,6 +5,26 @@ ul {
     font-size: 22px;
     font-weight: bold;
 }
+ul:before {
+    border: 2px solid magenta;
+    height: 5px;
+    width: 10px;
+    content: "Magenta"
+}
+ul:hover:before {
+    background-color: yellow;
+}
+ul::after {
+    height: 10px;
+    width: 50px;
+    color: red;
+    background-color: blue;
+    content: "Yellow"
+}
+ul:hover::after {
+    width: 100px;
+    background-color: yellow;
+}
 li {
     font-size: 16px;
     font-weight: normal;

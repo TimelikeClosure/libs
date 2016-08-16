@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function(){
     elementCSS.getCSS(element, {
         elements: {
             inherited: false,
-            descendants: false
+            descendants: true
         },
         styles: {
-            preserveMediaQueries: false,
-            fullSelectorText: true
+            preserveMediaQueries: true,
+            fullSelectorText: false
         }
     });
 });

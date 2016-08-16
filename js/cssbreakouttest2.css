@@ -5,7 +5,7 @@ ul, ol {
     font-style: oblique;
 }
 li {
-    cursor: pointer;
+    cursor: pointer !important;
 }
 @media (min-width: 769px){
     li.active {
