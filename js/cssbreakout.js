@@ -365,11 +365,7 @@ function CSSBreakout() {
 
             this.link = styleRuleLink;
             this.selectors = [];
-            if (options.fullSelectorText){
-                var selectorList = [this.link.selectorText];
-            } else {
-                selectorList = this.link.selectorText.split(',');
-            }
+            var selectorList= this.link.selectorText.split(',');
             for (var selector = 0; selector < selectorList.length; selector++){
                 this.selectors.push(new StyleSelectorTracker(selectorList[selector]));
             }
@@ -616,12 +612,12 @@ function CSSBreakout() {
             preserveMediaQueries: true, //  preserve media query blocks instead of selecting rules inside currently applied media queries
             preservePseudoElements: false,    //  preserve pseudo elements
             preserveElementStates: true,   //  preserve element state selectors instead of selecting currently applied states
-            fullSelectorText: false, //  preserve full list of selectors instead of filtering out unused ones
             overwrittenStyleRules: true,    //  used on filter-out declarations
             overwrittenStyleDeclarations: true, //  used on filter-out declarations
             inline: false   //  used on filter-out declarations
         },
         output: {
+            fullSelectorText: false, //  preserve full list of selectors instead of filtering out unused ones
             format: 'javascript'
         }
     };
