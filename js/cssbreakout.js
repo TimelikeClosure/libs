@@ -264,19 +264,26 @@ function CSSBreakout() {
              * Begin Private Methods
              */
 
-            function getSpecificity(originalText){
-                var specficity = [0, 0, 0];
-
-                return specficity;
-            }
+            //function getSpecificity(originalText){
+            //    var specficity = [0, 0, 0];
+            //
+            //    return specficity;
+            //}
 
             function getSearchText(originalText){
-                var reducedText = originalText;
-                if (reducedText == originalText){   //  base case
-                    return reducedText;
-                } else {    //  recursive case
-                    return getSearchText(reducedText);
+
+                var removeSelectorPortions = [];
+                if (options.preservePseudoElements){
+                    removeSelectorPortions = removeSelectorPortions.concat(['::before', '::after', ':before', ':after']);
                 }
+                if (options.preserveElementStates){
+                    removeSelectorPortions = removeSelectorPortions.concat([':hover', ':focus', ':active', ':visited']);
+                }
+                var reducedText = originalText;
+                for (var index = 0; index < removeSelectorPortions.length; index++){
+                    reducedText = reducedText.split(removeSelectorPortions[index]).join('');
+                }
+                return reducedText;
             }
 
             /**
@@ -296,6 +303,9 @@ function CSSBreakout() {
              * Begin Public Methods
              */
 
+            this.findSelectedElements = function(elementTree){
+
+            };
 
             /**
              * End Public Methods
@@ -306,7 +316,7 @@ function CSSBreakout() {
              */
 
             this.originalText = selectorOriginalString.trim();
-            this.specificity = getSpecificity(this.originalText);
+            //this.specificity = getSpecificity(this.originalText);
             this.searchText = getSearchText(this.originalText);
 
 
@@ -339,6 +349,11 @@ function CSSBreakout() {
              * Begin Public Methods
              */
 
+            this.findSelectedElements = function(elementTree){
+                for (var selectorIndex = 0; selectorIndex < this.selectors.length; selectorIndex++){
+                    this.selectors[selectorIndex].findSelectedElements(elementTree);
+                }
+            };
 
             /**
              * End Public Methods
@@ -405,6 +420,11 @@ function CSSBreakout() {
                  * Begin Public Methods
                  */
 
+                this.findSelectedElements = function(elementTree){
+                    for (var ruleIndex = 0; ruleIndex < this.rules.length; ruleIndex++){
+                        this.rules[ruleIndex].findSelectedElements(elementTree);
+                    }
+                };
 
                 /**
                  * End Public Methods
@@ -479,6 +499,12 @@ function CSSBreakout() {
              * Begin Public Methods
              */
 
+            this.findSelectedElements = function(elementTree){
+                for (var ruleIndex = 0; ruleIndex < this.rules.length; ruleIndex++){
+                    this.rules[ruleIndex].findSelectedElements(elementTree);
+                }
+            };
+
 
             /**
              * End Public Methods
@@ -505,8 +531,11 @@ function CSSBreakout() {
          * Begin Public Methods
          */
 
-        this.filterUsedSelectors = function(elementTree){
-
+        this.findSelectedElements = function(elementTree){
+            var sheets = sheetList.sheets;
+            for (var sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++){
+                sheets[sheetIndex].findSelectedElements(elementTree);
+            }
         };
 
         this.output = function(outputOptions){
@@ -560,7 +589,7 @@ function CSSBreakout() {
         var sheets = new StyleSheetTreeTracker(styleOptions);
 
         //  Filter in selectors of the stylesheet tree used by the element tree
-        sheets.filterUsedSelectors(elements);
+        sheets.findSelectedElements(elements);
 
         //  Filter out declarations overwritten by other declarations
         elements.filterOverwrittenDeclarations(sheets);
@@ -584,9 +613,9 @@ function CSSBreakout() {
             descendants: true  //  check for properties affecting any of target element's children
         },
         styles: {
-            preserveMediaQueries: true, //  preserve media queries instead of selecting currently applied media queries inside media queries
-            preserveElementStates: false,   //  used on construction
-            unusedPseudoElements: false,    //  used on construction
+            preserveMediaQueries: true, //  preserve media query blocks instead of selecting rules inside currently applied media queries
+            preservePseudoElements: false,    //  preserve pseudo elements
+            preserveElementStates: true,   //  preserve element state selectors instead of selecting currently applied states
             fullSelectorText: false, //  preserve full list of selectors instead of filtering out unused ones
             overwrittenStyleRules: true,    //  used on filter-out declarations
             overwrittenStyleDeclarations: true, //  used on filter-out declarations

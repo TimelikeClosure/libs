@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", function(){
         },
         styles: {
             preserveMediaQueries: true,
+            preservePseudoElements: true,
+            preserveElementStates: true,
             fullSelectorText: false
         }
     });
