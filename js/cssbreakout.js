@@ -348,6 +348,7 @@ function CSSBreakout() {
 
             this.findSelectedElements = function(elementTree){
                 elementTree.addSelector(this);
+                return this.elements;
             };
 
             /**
@@ -466,6 +467,14 @@ function CSSBreakout() {
                     }
                 };
 
+                this.outputJS = function(){
+                    var output = [];
+                    for (var index = 0; index < this.rules.length; index++){
+                        output = output.concat(this.rules[index].outputJS());
+                    }
+                    return output;
+                };
+
                 /**
                  * End Public Methods
                  */
@@ -545,6 +554,13 @@ function CSSBreakout() {
                 }
             };
 
+            this.outputJS = function(){
+                var output = [];
+                for (var index = 0; index < this.rules.length; index++){
+                    output = output.concat(this.rules[index].outputJS());
+                }
+                return output;
+            };
 
             /**
              * End Public Methods
@@ -579,7 +595,15 @@ function CSSBreakout() {
         };
 
         this.output = function(outputOptions){
-
+            switch (outputOptions.format){
+                case 'javascript':
+                    var output = [];
+                    for (var index = 0; index < sheetList.sheets.length; index++){
+                        output = output.concat(sheetList.sheets[index].outputJS());
+                    }
+                    break;
+                default:
+            }
         };
 
         /**
