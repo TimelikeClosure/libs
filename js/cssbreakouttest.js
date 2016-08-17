@@ -6,7 +6,7 @@ var elementCSS = new CSSBreakout();
 
 document.addEventListener("DOMContentLoaded", function(){
     var element = document.getElementById('test');
-    elementCSS.getCSS(element, {
+    var css = elementCSS.getCSS(element, {
         elements: {
             inherited: false,
             descendants: true
@@ -16,6 +16,10 @@ document.addEventListener("DOMContentLoaded", function(){
             preservePseudoElements: true,
             preserveElementStates: true,
             fullSelectorText: false
+        },
+        output: {
+            format: 'css'
         }
     });
+    console.log(css);
 });

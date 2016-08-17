@@ -286,6 +286,12 @@ function CSSBreakout() {
              * Begin Public Methods
              */
 
+            this.getCSS = function(){
+                var output = "";
+                output += this.declaration.keyHTML += ": ";
+                output += this.declaration.value += ";\n";
+                return output;
+            };
 
             /**
              * End Public Methods
@@ -373,6 +379,10 @@ function CSSBreakout() {
                 return this.elements;
             };
 
+            this.getCSS = function(){
+                return this.originalText;
+            };
+
             /**
              * End Public Methods
              */
@@ -429,6 +439,20 @@ function CSSBreakout() {
                     addElements(selectorElements);
                 }
                 return this.elements;
+            };
+
+            this.getCSS = function(){
+                var output = "";
+                var selectorOutputList = [];
+                for (var index = 0; index < this.selectors.length; index++){
+                    selectorOutputList.push(this.selectors[index].getCSS());
+                }
+                output += selectorOutputList.join(",") + " {\n";
+                for (var index = 0; index < this.declarations.length; index++){
+                    output += this.declarations[index].getCSS();
+                }
+                output += "}\n";
+                return output;
             };
 
             /**
@@ -519,6 +543,16 @@ function CSSBreakout() {
                     return output;
                 };
 
+                this.getCSS = function(){
+                    var output = "@media " + this.link.media.mediaText + " {\n";
+                    var mediaSelectors = [];
+                    for (var index = 0; index < this.rules.length; index++){
+                        output += this.rules[index].getCSS();
+                    }
+                    output += "}\n";
+                    return output;
+                };
+
                 /**
                  * End Public Methods
                  */
@@ -600,6 +634,14 @@ function CSSBreakout() {
                 }
             };
 
+            this.getCSS = function(){
+                var output = "";
+                for (var index = 0; index < this.rules.length; index++){
+                    output += this.rules[index].getCSS();
+                }
+                return output;
+            };
+
             /**
              * End Public Methods
              */
@@ -634,7 +676,14 @@ function CSSBreakout() {
         };
 
         this.output = function(outputOptions){
-
+            switch (outputOptions.format){
+                case "css":
+                    var output = "";
+                    for (var index = 0; index < sheetList.sheets.length; index++){
+                        output += sheetList.sheets[index].getCSS();
+                    }
+                    return output;
+            }
         };
 
         /**
@@ -711,13 +760,13 @@ function CSSBreakout() {
             preserveMediaQueries: true, //  preserve media query blocks instead of selecting rules inside currently applied media queries
             preservePseudoElements: true,    //  preserve pseudo elements
             preserveElementStates: true,   //  preserve element state selectors instead of selecting currently applied states
+            fullSelectorText: false, //  preserve full list of selectors instead of filtering out unused ones
             overwrittenStyleRules: true,    //  used on filter-out declarations
             overwrittenStyleDeclarations: true, //  used on filter-out declarations
             inline: false   //  used on filter-out declarations
         },
         output: {
-            fullSelectorText: false, //  preserve full list of selectors instead of filtering out unused ones
-            format: 'javascript'
+            format: 'css'
         }
     };
 

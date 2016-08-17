@@ -9,7 +9,7 @@ ul:before {
     border: 2px solid magenta;
     height: 5px;
     width: 10px;
-    content: "Magenta"
+    content: "Magenta";
 }
 ul:hover:before {
     background-color: yellow;
@@ -19,7 +19,7 @@ ul::after {
     width: 50px;
     color: red;
     background-color: blue;
-    content: "Yellow"
+    content: "Yellow";
 }
 ul:hover::after {
     width: 100px;
