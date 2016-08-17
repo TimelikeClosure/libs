@@ -136,14 +136,26 @@ function CSSBreakout() {
             };
 
             this.addSelector = function(selector){
-                if (this.link.matches(selector.getSearchText())){
-                    this.selectors.push(selector);
-                    selector.addElement(this);
+                if (selector.addElement(this)){
+                    this.selectors.push({
+                        selector: selector,
+                        specificity: selector.getSpecifity()
+                    });
                 }
                 for (var childIndex = 0; childIndex < this.children.length; childIndex++){
                     this.children[childIndex].addSelector(selector);
                 }
             };
+
+            this.addRule = function(rule){
+                this.rules.push(rule);
+                return true;
+            };
+
+        this.addMediaQuery = function(mediaQuery){
+            this.mediaQueries.push(mediaQuery);
+            return true;
+        };
 
             /**
              * End Public Methods
@@ -157,6 +169,8 @@ function CSSBreakout() {
             this.parent = null;
             this.children = [];
             this.selectors = [];
+            this.rules = [];
+            this.mediaQueries = [];
 
             /**
              * End Variable Initialization
@@ -185,7 +199,7 @@ function CSSBreakout() {
             elementList.root.addSelector(selector);
         };
 
-        this.filterOverwrittenDeclarations = function(styleTree){
+        this.findSelectedDeclarations = function(styleTree){
 
         };
 
@@ -297,11 +311,13 @@ function CSSBreakout() {
              * Begin Private Methods
              */
 
-            //function getSpecificity(originalText){
-            //    var specficity = [0, 0, 0];
-            //
-            //    return specficity;
-            //}
+            function setSpecificity(originalText){
+                var specificity = [0, 0, 0];
+
+                //  calculate specificity from count of: (ids), (classes, attributes, pseudo-classes), (types, pseudo-elements)
+
+                return specificity;
+            }
 
             function setSearchText(originalText){
 
@@ -340,10 +356,16 @@ function CSSBreakout() {
                 return this.searchText;
             };
 
+            this.getSpecifity = function(){
+                return this.specificity;
+            };
+
             this.addElement = function(element){
                 if (element.getDOMElement().matches(this.searchText)){
                     this.elements.push(element);
+                    return true;
                 }
+                return false;
             };
 
             this.findSelectedElements = function(elementTree){
@@ -360,7 +382,7 @@ function CSSBreakout() {
              */
 
             this.originalText = selectorOriginalString.trim();
-            //this.specificity = getSpecificity(this.originalText);
+            this.specificity = setSpecificity(this.originalText);
             this.searchText = setSearchText(this.originalText);
             this.elements = [];
 
@@ -375,7 +397,14 @@ function CSSBreakout() {
              * Begin Private Methods
              */
 
-
+            function addElements(testElements){
+                while (testElements.length > 0){
+                    var testElement = testElements.shift();
+                    if (rule.elements.indexOf(testElement) < 0 && testElement.addRule(rule)){
+                        rule.elements.push(testElement);
+                    }
+                }
+            }
 
             /**
              * End Private Methods
@@ -396,8 +425,10 @@ function CSSBreakout() {
 
             this.findSelectedElements = function(elementTree){
                 for (var selectorIndex = 0; selectorIndex < this.selectors.length; selectorIndex++){
-                    this.selectors[selectorIndex].findSelectedElements(elementTree);
+                    var selectorElements = this.selectors[selectorIndex].findSelectedElements(elementTree);
+                    addElements(selectorElements);
                 }
+                return this.elements;
             };
 
             /**
@@ -408,16 +439,18 @@ function CSSBreakout() {
              * Begin Variable Initialization
              */
 
+            var rule = this;
             this.link = styleRuleLink;
             this.selectors = [];
             var selectorList= this.link.selectorText.split(',');
             for (var selector = 0; selector < selectorList.length; selector++){
-                this.selectors.push(new StyleSelectorTracker(selectorList[selector]));
+                this.selectors.push(new StyleSelectorTracker(selectorList[selector], this));
             }
             this.declarations = [];
             for (var declaration = 0; declaration < this.link.style.length; declaration++){
                 this.declarations.push(new StyleDeclarationTracker(this.link.style, declaration));
             }
+            this.elements = [];
 
             /**
              * End Variable Initialization
@@ -444,6 +477,15 @@ function CSSBreakout() {
                     }
                 }
 
+                function addElements(testElements){
+                    while (testElements.length > 0){
+                        var testElement = testElements.shift();
+                        if (mediaRule.elements.indexOf(testElement) < 0 && testElement.addMediaQuery(mediaRule)){
+                            mediaRule.elements.push(testElement);
+                        }
+                    }
+                }
+
                 /**
                  * End Private Methods
                  */
@@ -463,8 +505,10 @@ function CSSBreakout() {
 
                 this.findSelectedElements = function(elementTree){
                     for (var ruleIndex = 0; ruleIndex < this.rules.length; ruleIndex++){
-                        this.rules[ruleIndex].findSelectedElements(elementTree);
+                        var ruleElements = this.rules[ruleIndex].findSelectedElements(elementTree);
+                        addElements(ruleElements);
                     }
+                    return this.elements;
                 };
 
                 this.outputJS = function(){
@@ -483,8 +527,10 @@ function CSSBreakout() {
                  * Begin Variable Initialization
                  */
 
+                var mediaRule = this;
                 this.link = mediaRuleLink;
                 this.rules = [];
+                this.elements = [];
                 addRulesToList(this.link.cssRules, this.rules);
 
                 /**
@@ -554,14 +600,6 @@ function CSSBreakout() {
                 }
             };
 
-            this.outputJS = function(){
-                var output = [];
-                for (var index = 0; index < this.rules.length; index++){
-                    output = output.concat(this.rules[index].outputJS());
-                }
-                return output;
-            };
-
             /**
              * End Public Methods
              */
@@ -572,6 +610,7 @@ function CSSBreakout() {
 
             this.link = styleSheetLink;
             this.rules = [];
+            this.elements = [];
             addRulesToList(this.link.rules, this.rules);
 
             /**
@@ -595,15 +634,7 @@ function CSSBreakout() {
         };
 
         this.output = function(outputOptions){
-            switch (outputOptions.format){
-                case 'javascript':
-                    var output = [];
-                    for (var index = 0; index < sheetList.sheets.length; index++){
-                        output = output.concat(sheetList.sheets[index].outputJS());
-                    }
-                    break;
-                default:
-            }
+
         };
 
         /**
@@ -656,7 +687,7 @@ function CSSBreakout() {
         sheets.findSelectedElements(elements);
 
         //  Filter out declarations overwritten by other declarations
-        elements.filterOverwrittenDeclarations(sheets);
+        elements.findSelectedDeclarations(sheets);
 
         //  Return output
         var outputOptions = getCombinedOptions(options, 'output');
