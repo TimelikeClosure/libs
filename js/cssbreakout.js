@@ -710,7 +710,9 @@ function CSSBreakout() {
             sheets: []
         };
         for (var sheet = 0; sheet < sheetList.link.length; sheet++){
-            sheetList.sheets.push(new StyleSheetTracker(sheetList.link[sheet]));
+            if (sheetList.link[sheet].cssRules !== null){
+                sheetList.sheets.push(new StyleSheetTracker(sheetList.link[sheet]));
+            }
         }
         console.log("Added stylesheet tree: ", sheetList);
 
