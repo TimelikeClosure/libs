@@ -21,9 +21,15 @@ ul::after {
     background-color: blue;
     content: "Yellow";
 }
-ul:hover::after {
+ul:hover::after, input::before {
     width: 100px;
     background-color: yellow;
+}
+input {
+    background-color: red;
+}
+input:focus {
+    background-color: green;
 }
 li {
     font-size: 16px;

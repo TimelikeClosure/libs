@@ -434,9 +434,13 @@ function CSSBreakout() {
              */
 
             this.findSelectedElements = function(elementTree){
-                for (var selectorIndex = 0; selectorIndex < this.selectors.length; selectorIndex++){
+                for (var selectorIndex = this.selectors.length - 1 ; selectorIndex >= 0 ; selectorIndex--){
                     var selectorElements = this.selectors[selectorIndex].findSelectedElements(elementTree);
-                    addElements(selectorElements);
+                    if (selectorElements.length > 0) {
+                        addElements(selectorElements);
+                    } else if (!options.fullSelectorText){
+                        this.selectors.splice(selectorIndex, 1);
+                    }
                 }
                 return this.elements;
             };
@@ -528,9 +532,13 @@ function CSSBreakout() {
                  */
 
                 this.findSelectedElements = function(elementTree){
-                    for (var ruleIndex = 0; ruleIndex < this.rules.length; ruleIndex++){
+                    for (var ruleIndex = this.rules.length - 1; ruleIndex >= 0; ruleIndex--){
                         var ruleElements = this.rules[ruleIndex].findSelectedElements(elementTree);
-                        addElements(ruleElements);
+                        if (ruleElements.length > 0){
+                            addElements(ruleElements);
+                        } else {
+                            this.rules.splice(ruleIndex, 1);
+                        }
                     }
                     return this.elements;
                 };
@@ -629,8 +637,11 @@ function CSSBreakout() {
              */
 
             this.findSelectedElements = function(elementTree){
-                for (var ruleIndex = 0; ruleIndex < this.rules.length; ruleIndex++){
-                    this.rules[ruleIndex].findSelectedElements(elementTree);
+                for (var ruleIndex = this.rules.length - 1; ruleIndex >= 0; ruleIndex--){
+                    var rulesElements = this.rules[ruleIndex].findSelectedElements(elementTree);
+                    if (rulesElements.length == 0){
+                        this.rules.splice(ruleIndex, 1);
+                    }
                 }
             };
 
