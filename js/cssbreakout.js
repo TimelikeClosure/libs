@@ -334,8 +334,14 @@ function CSSBreakout() {
                 if (options.preserveElementStates){
                     removeSelectorPortions = removeSelectorPortions.concat([':hover', ':focus', ':active', ':visited']);
                 }
+                removeSelectorPortions = removeSelectorPortions.concat([':not()']);
                 var reducedText = originalText;
                 for (var index = 0; index < removeSelectorPortions.length; index++){
+                    if (reducedText.indexOf(removeSelectorPortions[index]) == 0){
+                        reducedText = "*" + reducedText.slice(removeSelectorPortions[index].length, reducedText.length);
+                    }
+                    reducedText = reducedText.split(' ' + removeSelectorPortions[index]).join(' *');
+                    reducedText = reducedText.split('>' + removeSelectorPortions[index]).join('>*');
                     reducedText = reducedText.split(removeSelectorPortions[index]).join('');
                 }
                 return reducedText;
@@ -394,6 +400,9 @@ function CSSBreakout() {
             this.originalText = selectorOriginalString.trim();
             this.specificity = setSpecificity(this.originalText);
             this.searchText = setSearchText(this.originalText);
+            if (this.searchText === ''){
+                console.log('Warning, StyleSelectorTracker.searchText is empty for: ', this.originalText);
+            }
             this.elements = [];
 
 
@@ -479,6 +488,135 @@ function CSSBreakout() {
                 this.declarations.push(new StyleDeclarationTracker(this.link.style, declaration));
             }
             this.elements = [];
+
+            /**
+             * End Variable Initialization
+             */
+        }
+
+        function FontFaceRuleTracker(fontFaceRuleLink){
+            /**
+             * Begin Private Methods
+             */
+
+
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+            this.getCSS = function(){
+
+            };
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+            this.link = fontFaceRuleLink;
+
+            /**
+             * End Variable Initialization
+             */
+        }
+
+        function KeyframesRuleTracker(keyframesRuleLink){
+            /**
+             * Begin Private Methods
+             */
+
+
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+            this.getCSS = function(){
+
+            };
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+            this.link = keyframesRuleLink;
+
+            /**
+             * End Variable Initialization
+             */
+        }
+
+        function KeyframesRulesListTracker(keyframesRulesListLink){
+            /**
+             * Begin Private Methods
+             */
+
+
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+            this.getCSS = function(){
+
+            };
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+            this.link = keyframesRulesListLink;
 
             /**
              * End Variable Initialization
@@ -596,7 +734,7 @@ function CSSBreakout() {
                         } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
                             rulesTrackerList.push(new MediaRuleTracker(rule));
                         } else {
-                            rulesTrackerList.push(null);
+                            //rulesTrackerList.push(null);
                             console.log('Warning, invalid rule type: ', rule);
                         }
                     }
