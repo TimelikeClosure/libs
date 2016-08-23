@@ -185,10 +185,13 @@ function CSSBreakout() {
 
             this.getInheritedCSS = function(originalOptions){
                 var css = "";
+                css += "/* Begin Inherited Elements */\n\n";
                 if (this.parent !== null){
                     css += this.parent.getInheritedCSS(originalOptions);
                 }
-                css += "/* " + this.getOpeningTagText() + " */\n";
+                css += "/* End Inherited Elements */\n\n";
+                css += "/* Begin Target Element */\n\n";
+                css += "/* " + this.getOpeningTagText() + " */\n\n";
                 var elementOptions = {
                     elements: {
                         inherited: false,
@@ -199,7 +202,8 @@ function CSSBreakout() {
                 };
                 var elementCSSBreakout = new CSSBreakout();
                 css += elementCSSBreakout.getCSS(this.link, elementOptions);
-                css += "/* " + this.getClosingTagText() + " */\n";
+                css += "\n/* " + this.getClosingTagText() + " */\n\n";
+                css += "/* End Target Element */\n\n";
                 return css;
             };
 
@@ -238,7 +242,7 @@ function CSSBreakout() {
                 if (this.parent !== null){
                     css += this.parent.getInheritedCSS(originalOptions);
                 }
-                css += "/* " + this.getOpeningTagText() + " */\n";
+                css += "/* " + this.getOpeningTagText() + " */\n\n";
                 var elementOptions = {
                     elements: {
                         inherited: false,
@@ -249,7 +253,7 @@ function CSSBreakout() {
                 };
                 var elementCSSBreakout = new CSSBreakout();
                 css += elementCSSBreakout.getCSS(this.link, elementOptions);
-                css += "/* " + this.getClosingTagText() + " */\n\n";
+                css += "\n/* " + this.getClosingTagText() + " */\n\n";
                 return css;
             };
         }
