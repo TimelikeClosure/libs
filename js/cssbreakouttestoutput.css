@@ -1,4 +1,7 @@
+/* Begin Inherited Elements */
+
 /* <html> */
+
 html {
     box-sizing: border-box;
 }
@@ -8,8 +11,11 @@ html {
     padding-bottom: 1px;
     padding-left: 1px;
 }
+
 /* </html> */
+
 /* <body> */
+
 body {
     margin-top: 0px;
     margin-right: 0px;
@@ -22,8 +28,29 @@ body {
     padding-bottom: 1px;
     padding-left: 1px;
 }
+
 /* </body> */
+
 /* <div id="test"> */
+
+#test {
+    font-weight: 700;
+}
+* {
+    padding-top: 1px;
+    padding-right: 1px;
+    padding-bottom: 1px;
+    padding-left: 1px;
+}
+
+/* </div> */
+
+/* End Inherited Elements */
+
+/* Begin Target Element */
+
+/* <ul> */
+
 #test * {
     font-family: "Comic Sans MS", sans-serif;
 }
@@ -51,7 +78,7 @@ ul::before {
     border-image-repeat: initial;
     height: 5px;
     width: 10px;
-    content: "Magenta";
+    content: "ul:before";
 }
 ul:hover::before {
     background-color: yellow;
@@ -61,11 +88,35 @@ ul::after {
     width: 50px;
     color: red;
     background-color: blue;
-    content: "Yellow";
+    content: "ul::after";
 }
 ul:hover::after {
     width: 100px;
     background-color: yellow;
+}
+#test :not(.active) {
+    font-family: Calibri, Courier, sans-serif;
+}
+ul {
+    font-style: oblique;
+}
+* {
+    padding-top: 1px;
+    padding-right: 1px;
+    padding-bottom: 1px;
+    padding-left: 1px;
+}
+
+/* </ul> */
+
+/* End Target Element */
+
+/* Begin Descendant Elements */
+
+/* <ul> */
+
+#test * {
+    font-family: "Comic Sans MS", sans-serif;
 }
 li {
     font-size: 16px;
@@ -81,9 +132,6 @@ li:hover {
 }
 #test :not(.active) {
     font-family: Calibri, Courier, sans-serif;
-}
-ul {
-    font-style: oblique;
 }
 li {
     cursor: pointer;
@@ -104,4 +152,7 @@ li {
     padding-bottom: 1px;
     padding-left: 1px;
 }
-/* </div> */
+
+/* </ul> */
+
+/* End Descendant Elements */

@@ -133,17 +133,25 @@ function CSSBreakout() {
                 return this.link;
             };
 
-            this.addSelector = function(selector){
-                if (selector.addElement(this)){
-                    this.selectors.push({
-                        selector: selector,
-                        specificity: selector.getSpecifity()
-                    });
-                }
-                for (var childIndex = 0; childIndex < this.children.length; childIndex++){
-                    this.children[childIndex].addSelector(selector);
-                }
-            };
+            if (options.ignoreTarget && this instanceof ElementTracker){
+                this.addSelector = function(selector){
+                    for (var childIndex = 0; childIndex < this.children.length; childIndex++){
+                        this.children[childIndex].addSelector(selector);
+                    }
+                };
+            } else {
+                this.addSelector = function(selector){
+                    if (selector.addElement(this)){
+                        this.selectors.push({
+                            selector: selector,
+                            specificity: selector.getSpecifity()
+                        });
+                    }
+                    for (var childIndex = 0; childIndex < this.children.length; childIndex++){
+                        this.children[childIndex].addSelector(selector);
+                    }
+                };
+            }
 
             this.addRule = function(rule){
                 this.rules.push(rule);
@@ -190,17 +198,14 @@ function CSSBreakout() {
                     css += this.parent.getInheritedCSS(originalOptions);
                 }
                 css += "/* End Inherited Elements */\n\n";
-                if (originalOptions.elements.descendants){
-                    var targetDescription = "Target & Descendant Elements";
-                } else {
-                    targetDescription = "Target Element";
-                }
-                css += "/* Begin " + targetDescription + " */\n\n";
+
+                css += "/* Begin Target Element */\n\n";
                 css += "/* " + this.getOpeningTagText() + " */\n\n";
                 var elementOptions = {
                     elements: {
                         inherited: false,
-                        descendants: originalOptions.elements.descendants
+                        descendants: false,
+                        ignoreTarget: false
                     },
                     styles: originalOptions.styles,
                     output: originalOptions.output
@@ -208,7 +213,26 @@ function CSSBreakout() {
                 var elementCSSBreakout = new CSSBreakout();
                 css += elementCSSBreakout.getCSS(this.link, elementOptions);
                 css += "\n/* " + this.getClosingTagText() + " */\n\n";
-                css += "/* End " + targetDescription + " */\n\n";
+                css += "/* End Target Element */\n\n";
+
+                if (originalOptions.elements.descendants) {
+                    css += "/* Begin Descendant Elements */\n\n";
+                    css += "/* " + this.getOpeningTagText() + " */\n\n";
+                    elementOptions = {
+                        elements: {
+                            inherited: false,
+                            descendants: true,
+                            ignoreTarget: true
+                        },
+                        styles: originalOptions.styles,
+                        output: originalOptions.output
+                    };
+                    elementCSSBreakout = new CSSBreakout();
+                    css += elementCSSBreakout.getCSS(this.link, elementOptions);
+                    css += "\n/* " + this.getClosingTagText() + " */\n\n";
+                    css += "/* End Descendant Elements */\n\n";
+                }
+
                 return css;
             };
 
@@ -1004,7 +1028,8 @@ function CSSBreakout() {
     var config = {
         elements: {
             inherited: true,   //  check for inherited properties on the target element
-            descendants: true  //  check for properties affecting any of target element's children
+            descendants: true,  //  check for properties affecting any of target element's children
+            ignoreTarget: false  //  ignores properties affecting only the target element
         },
         styles: {
             preserveMediaQueries: true, //  preserve media query blocks instead of selecting rules inside currently applied media queries

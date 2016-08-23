@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function(){
     var css = elementCSS.getCSS(element, {
         elements: {
             inherited: true,
-            descendants: true
+            descendants: true,
+            ignoreTarget: false
         },
         styles: {
             preserveMediaQueries: true,
