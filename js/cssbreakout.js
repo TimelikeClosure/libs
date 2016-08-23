@@ -152,10 +152,20 @@ function CSSBreakout() {
                 return true;
             };
 
-        this.addMediaQuery = function(mediaQuery){
-            this.mediaQueries.push(mediaQuery);
-            return true;
-        };
+            this.addSupportsRule = function(supportsRule){
+                this.supportsRules.push(supportsRule);
+                return true;
+            };
+
+            this.addMediaQuery = function(mediaQuery){
+                this.mediaQueries.push(mediaQuery);
+                return true;
+            };
+
+            this.addSheet = function(sheet){
+                this.sheets.push(sheet);
+                return true;
+            };
 
             /**
              * End Public Methods
@@ -171,6 +181,8 @@ function CSSBreakout() {
             this.selectors = [];
             this.rules = [];
             this.mediaQueries = [];
+            this.supportsRules = [];
+            this.sheets = [];
 
             /**
              * End Variable Initialization
@@ -242,7 +254,14 @@ function CSSBreakout() {
          * Begin Private Methods
          */
 
-
+        function addElements(testElements){
+            while (testElements.length > 0){
+                var testElement = testElements.shift();
+                if (sheetList.elements.indexOf(testElement) < 0 && testElement.addSheet(sheet)){
+                    sheetList.elements.push(testElement);
+                }
+            }
+        }
 
         /**
          * End Private Methods
@@ -494,136 +513,106 @@ function CSSBreakout() {
              */
         }
 
-        function FontFaceRuleTracker(fontFaceRuleLink){
-            /**
-             * Begin Private Methods
-             */
 
-
-
-            /**
-             * End Private Methods
-             */
-
-            /**
-             * Begin Constructors
-             */
-
-
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
-
-            this.getCSS = function(){
-
-            };
-
-            /**
-             * End Public Methods
-             */
-
-            /**
-             * Begin Variable Initialization
-             */
-
-            this.link = fontFaceRuleLink;
-
-            /**
-             * End Variable Initialization
-             */
-        }
-
-        function KeyframesRuleTracker(keyframesRuleLink){
-            /**
-             * Begin Private Methods
-             */
-
-
-
-            /**
-             * End Private Methods
-             */
-
-            /**
-             * Begin Constructors
-             */
-
-
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
-
-            this.getCSS = function(){
-
-            };
-
-            /**
-             * End Public Methods
-             */
-
-            /**
-             * Begin Variable Initialization
-             */
-
-            this.link = keyframesRuleLink;
-
-            /**
-             * End Variable Initialization
-             */
-        }
-
-        function KeyframesRulesListTracker(keyframesRulesListLink){
-            /**
-             * Begin Private Methods
-             */
-
-
-
-            /**
-             * End Private Methods
-             */
-
-            /**
-             * Begin Constructors
-             */
-
-
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
-
-            this.getCSS = function(){
-
-            };
-
-            /**
-             * End Public Methods
-             */
-
-            /**
-             * Begin Variable Initialization
-             */
-
-            this.link = keyframesRulesListLink;
-
-            /**
-             * End Variable Initialization
-             */
-        }
 
         if (options.preserveMediaQueries){
+
+            var SupportsRuleTracker = function(supportsRuleLink){
+                /**
+                 * Begin Private Methods
+                 */
+
+                function addRulesToList(originalRulesList, rulesTrackerList){
+                    for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
+                        var rule = originalRulesList[ruleIndex];
+                        if (rule instanceof CSSStyleRule){  //  if rule is a style, add tracker for it
+                            rulesTrackerList.push(new StyleRuleTracker(rule));
+                        } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
+                            rulesTrackerList.push(new MediaRuleTracker(rule, addRulesToList));
+                        } else if (rule instanceof CSSSupportsRule){   //  if rule is a supports rule,
+                            rulesTrackerList.push(new SupportsRuleTracker(rule, addRulesToList));
+                        } else {
+                            rulesTrackerList.push(null);
+                            console.log('Warning, invalid rule type: ', rule);
+                        }
+                    }
+                }
+
+                function addElements(testElements){
+                    while (testElements.length > 0){
+                        var testElement = testElements.shift();
+                        if (supportsRule.elements.indexOf(testElement) < 0 && testElement.addSupportsRule(supportsRule)){
+                            supportsRule.elements.push(testElement);
+                        }
+                    }
+                }
+
+                /**
+                 * End Private Methods
+                 */
+
+                /**
+                 * Begin Constructors
+                 */
+
+
+                /**
+                 * End Constructors
+                 */
+
+                /**
+                 * Begin Public Methods
+                 */
+
+                this.findSelectedElements = function(elementTree){
+                    for (var ruleIndex = this.rules.length - 1; ruleIndex >= 0; ruleIndex--){
+                        var ruleElements = this.rules[ruleIndex].findSelectedElements(elementTree);
+                        if (ruleElements.length > 0){
+                            addElements(ruleElements);
+                        } else {
+                            this.rules.splice(ruleIndex, 1);
+                        }
+                    }
+                    return this.elements;
+                };
+
+                this.outputJS = function(){
+                    var output = [];
+                    for (var index = 0; index < this.rules.length; index++){
+                        output = output.concat(this.rules[index].outputJS());
+                    }
+                    return output;
+                };
+
+                this.getCSS = function(){
+                    var output = "@supports " + this.link.conditionText + " {\n";
+                    var mediaSelectors = [];
+                    for (var index = 0; index < this.rules.length; index++){
+                        output += this.rules[index].getCSS();
+                    }
+                    output += "}\n";
+                    return output;
+                };
+
+                /**
+                 * End Public Methods
+                 */
+
+                /**
+                 * Begin Variable Initialization
+                 */
+
+                var supportsRule = this;
+                this.link = supportsRuleLink;
+                this.rules = [];
+                this.elements = [];
+                addRulesToList(this.link.cssRules, this.rules);
+
+                /**
+                 * End Variable Initialization
+                 */
+            };
+
             var MediaRuleTracker = function(mediaRuleLink){
                 /**
                  * Begin Private Methods
@@ -636,6 +625,8 @@ function CSSBreakout() {
                             rulesTrackerList.push(new StyleRuleTracker(rule));
                         } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
                             rulesTrackerList.push(new MediaRuleTracker(rule, addRulesToList));
+                        } else if (rule instanceof CSSSupportsRule){   //  if rule is a supports rule,
+                            rulesTrackerList.push(new SupportsRuleTracker(rule, addRulesToList));
                         } else {
                             rulesTrackerList.push(null);
                             console.log('Warning, invalid rule type: ', rule);
@@ -733,6 +724,8 @@ function CSSBreakout() {
                             rulesTrackerList.push(new StyleRuleTracker(rule));
                         } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
                             rulesTrackerList.push(new MediaRuleTracker(rule));
+                        } else if (rule instanceof CSSSupportsRule){   //  if rule is a supports rule,
+                            rulesTrackerList.push(new SupportsRuleTracker(rule, addRulesToList));
                         } else {
                             //rulesTrackerList.push(null);
                             console.log('Warning, invalid rule type: ', rule);
@@ -749,10 +742,23 @@ function CSSBreakout() {
                             if (window.matchMedia(rule.media.mediaText).matches){ //  and if media query is active, add included rules
                                 addRulesToList(rule.cssRules, rulesTrackerList);
                             }
+                        } else if (rule instanceof CSSSupportsRule){   //  if rule is a supports rule,
+                            if (CSS.support(rule.conditionText)){ //  and if supports rule is active, add included rules
+                                addRulesToList(rule.cssRules, rulesTrackerList);
+                            }
                         } else {
                             rulesTrackerList.push(null);
                             console.log('Warning, invalid rule type: ', rule);
                         }
+                    }
+                }
+            }
+
+            function addElements(testElements){
+                while (testElements.length > 0){
+                    var testElement = testElements.shift();
+                    if (sheet.elements.indexOf(testElement) < 0 && testElement.addSheet(sheet)){
+                        sheet.elements.push(testElement);
                     }
                 }
             }
@@ -777,10 +783,13 @@ function CSSBreakout() {
             this.findSelectedElements = function(elementTree){
                 for (var ruleIndex = this.rules.length - 1; ruleIndex >= 0; ruleIndex--){
                     var rulesElements = this.rules[ruleIndex].findSelectedElements(elementTree);
-                    if (rulesElements.length == 0){
+                    if (rulesElements.length > 0){
+                        addElements(rulesElements);
+                    } else {
                         this.rules.splice(ruleIndex, 1);
                     }
                 }
+                return this.elements;
             };
 
             this.getCSS = function(){
@@ -799,6 +808,7 @@ function CSSBreakout() {
              * Begin Variable Initialization
              */
 
+            var sheet = this;
             this.link = styleSheetLink;
             this.rules = [];
             this.elements = [];
@@ -819,9 +829,17 @@ function CSSBreakout() {
 
         this.findSelectedElements = function(elementTree){
             var sheets = sheetList.sheets;
-            for (var sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++){
-                sheets[sheetIndex].findSelectedElements(elementTree);
+            for (var sheetIndex = sheets.length - 1; sheetIndex >= 0; sheetIndex--){
+                var sheetElements = sheets[sheetIndex].findSelectedElements(elementTree);
+                if (sheetElements.length > 0){
+                    console.log("sheet kept: ", sheets[sheetIndex]);
+                    addElements(sheetElements);
+                } else {
+                    console.log("sheet spliced: ", sheets[sheetIndex]);
+                    sheets.splice(sheetIndex, 1);
+                }
             }
+            console.log("Trimmed stylesheet tree: ", sheetList);
         };
 
         this.output = function(outputOptions){
@@ -845,6 +863,7 @@ function CSSBreakout() {
 
         var sheetList = {
             link: document.styleSheets,
+            elements: [],
             sheets: []
         };
         for (var sheet = 0; sheet < sheetList.link.length; sheet++){
