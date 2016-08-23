@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function(){
     var element = document.getElementById('test');
     var css = elementCSS.getCSS(element, {
         elements: {
-            inherited: false,
+            inherited: true,
             descendants: true
         },
         styles: {

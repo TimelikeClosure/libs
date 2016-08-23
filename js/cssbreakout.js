@@ -80,7 +80,6 @@ function CSSBreakout() {
          */
 
 
-
         /**
          * End Private Methods
          */
@@ -93,7 +92,6 @@ function CSSBreakout() {
             /**
              * Begin Private Methods
              */
-
 
 
             /**
@@ -115,12 +113,12 @@ function CSSBreakout() {
 
             this.setRootElement = function(){
                 //  Base case: element is root element
-                if (this.link === document.body.parentNode){
-                    return this;
+                if (element.link === document.body.parentNode){
+                    return element;
                 }
                 //  Recursive case: element is not root element
-                this.parent = new ParentElementTracker(this);
-                return this.parent.setRootElement();
+                element.parent = new ParentElementTracker(element);
+                return element.parent.setRootElement();
             };
 
             this.setDescendantElements = function(){
@@ -167,6 +165,44 @@ function CSSBreakout() {
                 return true;
             };
 
+            this.getOpeningTagText = function(){
+                var tagText = "<";
+                tagText += element.link.localName;
+                var attributes = element.link.attributes;
+                for (var i = 0; i < attributes.length; i++){
+                    tagText += " " + attributes[i].localName + "=\"" + attributes[i].value + "\"";
+                }
+                tagText += ">";
+                return tagText;
+            };
+
+            this.getClosingTagText = function(){
+                var tagText = "</";
+                tagText += element.link.localName;
+                tagText += ">";
+                return tagText;
+            };
+
+            this.getInheritedCSS = function(originalOptions){
+                var css = "";
+                if (this.parent !== null){
+                    css += this.parent.getInheritedCSS(originalOptions);
+                }
+                css += "/* " + this.getOpeningTagText() + " */\n";
+                var elementOptions = {
+                    elements: {
+                        inherited: false,
+                        descendants: originalOptions.elements.descendants
+                    },
+                    styles: originalOptions.styles,
+                    output: originalOptions.output
+                };
+                var elementCSSBreakout = new CSSBreakout();
+                css += elementCSSBreakout.getCSS(this.link, elementOptions);
+                css += "/* " + this.getClosingTagText() + " */\n";
+                return css;
+            };
+
             /**
              * End Public Methods
              */
@@ -175,6 +211,7 @@ function CSSBreakout() {
              * Begin Variable Initialization
              */
 
+            var element = this;
             this.link = elementLink;
             this.parent = null;
             this.children = [];
@@ -191,7 +228,30 @@ function CSSBreakout() {
 
         function ParentElementTracker(childElementTracker){
             ElementTracker.call(this, childElementTracker.link.parentElement);
+            var element = this;
             this.children.push(childElementTracker);
+
+
+
+            this.getInheritedCSS = function(originalOptions){
+                var css = "";
+                if (this.parent !== null){
+                    css += this.parent.getInheritedCSS(originalOptions);
+                }
+                css += "/* " + this.getOpeningTagText() + " */\n";
+                var elementOptions = {
+                    elements: {
+                        inherited: false,
+                        descendants: false
+                    },
+                    styles: originalOptions.styles,
+                    output: originalOptions.output
+                };
+                var elementCSSBreakout = new CSSBreakout();
+                css += elementCSSBreakout.getCSS(this.link, elementOptions);
+                css += "/* " + this.getClosingTagText() + " */\n";
+                return css;
+            };
         }
 
         function ChildElementTracker(parentElementTracker, childIndex){
@@ -215,6 +275,10 @@ function CSSBreakout() {
 
         };
 
+        this.getInheritedCSS = function(originalOptions){
+            return elementList.target.getInheritedCSS(originalOptions);
+        };
+
         /**
          * End Public Methods
          */
@@ -229,12 +293,10 @@ function CSSBreakout() {
             target: new ElementTracker(targetElement)
         };
         elementList.root = elementList.target;
-        //  Add inherited elements, if applicable
-        if (options.inherited){
+
+        if (options.inherited){ //  Add inherited elements, if applicable
             elementList.root = elementList.target.setRootElement();
-        }
-        //  Add descendant elements, if applicable
-        if (options.descendants){
+        } else if (options.descendants){  //  Add descendant elements, if applicable
             elementList.target.setDescendantElements();
         }
         console.log("Added element tree: ", elementList);
@@ -897,6 +959,15 @@ function CSSBreakout() {
         //  Create the element tree
         var elementOptions = getCombinedOptions(options, 'elements');
         var elements = new ElementTreeTracker(targetElement, elementOptions);
+        //  If checking inherited properties, get CSS for each part of inherited chain
+        if (elementOptions.inherited){
+            var inheritedOptions = {
+                elements: elementOptions,
+                styles: getCombinedOptions(options, 'styles'),
+                output: getCombinedOptions(options, 'output')
+            };
+            return elements.getInheritedCSS(inheritedOptions);
+        }
 
         //  Create the stylesheet tree
         var styleOptions = getCombinedOptions(options, 'styles');
