@@ -190,7 +190,12 @@ function CSSBreakout() {
                     css += this.parent.getInheritedCSS(originalOptions);
                 }
                 css += "/* End Inherited Elements */\n\n";
-                css += "/* Begin Target Element */\n\n";
+                if (originalOptions.elements.descendants){
+                    var targetDescription = "Target & Descendant Elements";
+                } else {
+                    targetDescription = "Target Element";
+                }
+                css += "/* Begin " + targetDescription + " */\n\n";
                 css += "/* " + this.getOpeningTagText() + " */\n\n";
                 var elementOptions = {
                     elements: {
@@ -203,7 +208,7 @@ function CSSBreakout() {
                 var elementCSSBreakout = new CSSBreakout();
                 css += elementCSSBreakout.getCSS(this.link, elementOptions);
                 css += "\n/* " + this.getClosingTagText() + " */\n\n";
-                css += "/* End Target Element */\n\n";
+                css += "/* End " + targetDescription + " */\n\n";
                 return css;
             };
 
