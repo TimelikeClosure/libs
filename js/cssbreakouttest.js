@@ -5,7 +5,7 @@
 var elementCSS = new CSSBreakout();
 
 document.addEventListener("DOMContentLoaded", function(){
-    var element = document.getElementById('test');
+    var element = document.getElementById('test').getElementsByTagName('ul')[0];
     var css = elementCSS.getCSS(element, {
         elements: {
             inherited: true,
@@ -21,6 +21,5 @@ document.addEventListener("DOMContentLoaded", function(){
             format: 'css'
         }
     });
-    console.log(css);
     document.getElementById("output").getElementsByTagName("pre")[0].textContent = css;
 });

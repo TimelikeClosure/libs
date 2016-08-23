@@ -249,7 +249,7 @@ function CSSBreakout() {
                 };
                 var elementCSSBreakout = new CSSBreakout();
                 css += elementCSSBreakout.getCSS(this.link, elementOptions);
-                css += "/* " + this.getClosingTagText() + " */\n";
+                css += "/* " + this.getClosingTagText() + " */\n\n";
                 return css;
             };
         }
