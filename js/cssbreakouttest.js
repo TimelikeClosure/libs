@@ -22,4 +22,5 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     });
     console.log(css);
+    document.getElementById("output").getElementsByTagName("pre")[0].textContent = css;
 });

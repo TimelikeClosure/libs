@@ -1,54 +1,80 @@
+/* <html> */
+html {
+    box-sizing: border-box;
+}
+* {
+    padding-top: 1px;
+    padding-right: 1px;
+    padding-bottom: 1px;
+    padding-left: 1px;
+}
+/* </html> */
+/* <body> */
+body {
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+* {
+    padding-top: 1px;
+    padding-right: 1px;
+    padding-bottom: 1px;
+    padding-left: 1px;
+}
+/* </body> */
+/* <div id="test"> */
 #test * {
     font-family: "Comic Sans MS", sans-serif;
 }
 ul {
-    font-size: 22px; font-weight: bold;
-    font-size: 22px; font-weight: bold;
+    font-size: 22px;
+    font-weight: bold;
 }
 ul::before {
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
-    border: 2px solid magenta; height: 5px; width: 10px; content: "Magenta";
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: magenta;
+    border-right-color: magenta;
+    border-bottom-color: magenta;
+    border-left-color: magenta;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+    height: 5px;
+    width: 10px;
+    content: "Magenta";
 }
 ul:hover::before {
     background-color: yellow;
 }
 ul::after {
-    height: 10px; width: 50px; color: red; content: "Yellow"; background-color: blue;
-    height: 10px; width: 50px; color: red; content: "Yellow"; background-color: blue;
-    height: 10px; width: 50px; color: red; content: "Yellow"; background-color: blue;
-    height: 10px; width: 50px; color: red; content: "Yellow"; background-color: blue;
-    height: 10px; width: 50px; color: red; content: "Yellow"; background-color: blue;
+    height: 10px;
+    width: 50px;
+    color: red;
+    background-color: blue;
+    content: "Yellow";
 }
 ul:hover::after {
-    width: 100px; background-color: yellow;
-    width: 100px; background-color: yellow;
+    width: 100px;
+    background-color: yellow;
 }
 li {
-    font-size: 16px; font-weight: normal; cursor: default;
-    font-size: 16px; font-weight: normal; cursor: default;
-    font-size: 16px; font-weight: normal; cursor: default;
+    font-size: 16px;
+    font-weight: normal;
+    cursor: default;
 }
 li.active {
-    text-decoration: underline; border-top-style: groove;
-    text-decoration: underline; border-top-style: groove;
+    text-decoration: underline;
+    border-top-style: groove;
 }
 li:hover {
     color: darkred;
@@ -56,19 +82,26 @@ li:hover {
 #test :not(.active) {
     font-family: Calibri, Courier, sans-serif;
 }
-ul,ol {
+ul {
     font-style: oblique;
 }
 li {
-    cursor: pointer !important;
+    cursor: pointer;
 }
 @media (min-width: 769px) {
     li.active {
-        text-decoration: underline; background-color: orange;
-        text-decoration: underline; background-color: orange;
+        text-decoration: underline;
+        background-color: orange;
     }
     li:hover {
-        color: darkred; background-color: yellow;
-        color: darkred; background-color: yellow;
+        color: darkred;
+        background-color: yellow;
     }
 }
+* {
+    padding-top: 1px;
+    padding-right: 1px;
+    padding-bottom: 1px;
+    padding-left: 1px;
+}
+/* </div> */
