@@ -866,7 +866,12 @@ function CSSBreakout() {
 
             var sheet = this;
             this.link = importRuleLink;
-            this.sheets = [new StyleSheetTracker(this.link.styleSheet)];
+            this.sheets = [];
+            if (this.link.styleSheet.cssRules !== null){
+                this.sheets.push(new StyleSheetTracker(this.link.styleSheet));
+            } else {
+                console.log("Warning, stylesheet with no rules: ", this.link.styleSheet);
+            }
             this.elements = [];
 
             /**
@@ -1037,6 +1042,8 @@ function CSSBreakout() {
         for (var sheet = 0; sheet < sheetList.link.length; sheet++){
             if (sheetList.link[sheet].cssRules !== null){
                 sheetList.sheets.push(new StyleSheetTracker(sheetList.link[sheet]));
+            } else {
+                console.log("Warning, stylesheet with no rules: ", sheetList.link[sheet]);
             }
         }
         console.log("Added stylesheet tree: ", sheetList);
