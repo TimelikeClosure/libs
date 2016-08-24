@@ -1,8 +1,6 @@
 function CSSBreakout() {
     "use strict";
-    /**
-     * Begin Private Methods
-     */
+    /** Begin Private Methods */
 
     if (!Element.prototype.matches) {
         Element.prototype.matches =
@@ -60,13 +58,9 @@ function CSSBreakout() {
         return combinedOptions;
     }
 
-    /**
-     * End Private Methods
-     */
+    /** End Private Methods */
 
-    /**
-     * Begin Constructors
-     */
+    /** Begin Constructors */
 
     /**
      * ElementTreeTracker - constructs an object representing all elements
@@ -75,41 +69,22 @@ function CSSBreakout() {
      * @constructor
      */
     function ElementTreeTracker(targetElement, options){
-        /**
-         * Begin Private Methods
-         */
+        /** Begin Private Methods */
 
+        /** End Private Methods */
 
-        /**
-         * End Private Methods
-         */
-
-        /**
-         * Begin Constructors
-         */
+        /** Begin Constructors */
 
         function ElementTracker(elementLink){
-            /**
-             * Begin Private Methods
-             */
+            /** Begin Private Methods */
 
+            /** End Private Methods */
 
-            /**
-             * End Private Methods
-             */
+            /** Begin Constructors */
 
-            /**
-             * Begin Constructors
-             */
+            /** End Constructors */
 
-
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
+            /** Begin Public Methods */
 
             this.setRootElement = function(){
                 //  Base case: element is root element
@@ -236,13 +211,9 @@ function CSSBreakout() {
                 return css;
             };
 
-            /**
-             * End Public Methods
-             */
+            /** End Public Methods */
 
-            /**
-             * Begin Variable Initialization
-             */
+            /** Begin Variable Initialization */
 
             var element = this;
             this.link = elementLink;
@@ -254,9 +225,7 @@ function CSSBreakout() {
             this.supportsRules = [];
             this.sheets = [];
 
-            /**
-             * End Variable Initialization
-             */
+            /** End Variable Initialization */
         }
 
         function ParentElementTracker(childElementTracker){
@@ -292,13 +261,9 @@ function CSSBreakout() {
             this.parent = parentElementTracker;
         }
 
-        /**
-         * End Constructors
-         */
+        /** End Constructors */
 
-        /**
-         * Begin Public Methods
-         */
+        /** Begin Public Methods */
 
         this.addSelector = function(selector){
             elementList.root.addSelector(selector);
@@ -312,13 +277,9 @@ function CSSBreakout() {
             return elementList.target.getInheritedCSS(originalOptions);
         };
 
-        /**
-         * End Public Methods
-         */
+        /** End Public Methods */
 
-        /**
-         * Begin Variable Initialization
-         */
+        /** Begin Variable Initialization */
 
         //  Create base object for referencing important ElementTrackers
         //  Add target element
@@ -334,9 +295,7 @@ function CSSBreakout() {
         }
         console.log("Added element tree: ", elementList);
 
-        /**
-         * End Variable Initialization
-         */
+        /** End Variable Initialization */
     }
 
     /**
@@ -345,9 +304,7 @@ function CSSBreakout() {
      * @constructor
      */
     function StyleSheetTreeTracker(options){
-        /**
-         * Begin Private Methods
-         */
+        /** Begin Private Methods */
 
         function addElements(testElements){
             while (testElements.length > 0){
@@ -358,18 +315,12 @@ function CSSBreakout() {
             }
         }
 
-        /**
-         * End Private Methods
-         */
+        /** End Private Methods */
 
-        /**
-         * Begin Constructors
-         */
+        /** Begin Constructors */
 
         function StyleDeclarationTracker(styleDeclarationListLink, styleDeclarationIndex){
-            /**
-             * Begin Private Methods
-             */
+            /** Begin Private Methods */
 
             function htmlToJs(htmlString){
                 var tempString = "";
@@ -383,22 +334,13 @@ function CSSBreakout() {
                 return jsString;
             }
 
-            /**
-             * End Private Methods
-             */
+            /** End Private Methods */
 
-            /**
-             * Begin Constructors
-             */
+            /** Begin Constructors */
 
+            /** End Constructors */
 
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
+            /** Begin Public Methods */
 
             this.getCSS = function(){
                 var output = "";
@@ -407,13 +349,9 @@ function CSSBreakout() {
                 return output;
             };
 
-            /**
-             * End Public Methods
-             */
+            /** End Public Methods */
 
-            /**
-             * Begin Variable Initialization
-             */
+            /** Begin Variable Initialization */
 
             this.listLink = styleDeclarationListLink;
             this.index = styleDeclarationIndex;
@@ -421,15 +359,11 @@ function CSSBreakout() {
             this.declaration.keyJS = htmlToJs(this.declaration.keyHTML);
             this.declaration.value = this.listLink[this.declaration.keyJS];
 
-            /**
-             * End Variable Initialization
-             */
+            /** End Variable Initialization */
         }
 
         function StyleSelectorTracker(selectorOriginalString){
-            /**
-             * Begin Private Methods
-             */
+            /** Begin Private Methods */
 
             function setSpecificity(originalText){
                 var specificity = [0, 0, 0];
@@ -461,22 +395,13 @@ function CSSBreakout() {
                 return reducedText;
             }
 
-            /**
-             * End Private Methods
-             */
+            /** End Private Methods */
 
-            /**
-             * Begin Constructors
-             */
+            /** Begin Constructors */
 
+            /** End Constructors */
 
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
+            /** Begin Public Methods */
 
             this.getSearchText = function(){
                 return this.searchText;
@@ -503,13 +428,9 @@ function CSSBreakout() {
                 return this.originalText;
             };
 
-            /**
-             * End Public Methods
-             */
+            /** End Public Methods */
 
-            /**
-             * Begin Variable Initialization
-             */
+            /** Begin Variable Initialization */
 
             this.originalText = selectorOriginalString.trim();
             this.specificity = setSpecificity(this.originalText);
@@ -519,16 +440,11 @@ function CSSBreakout() {
             }
             this.elements = [];
 
-
-            /**
-             * End Variable Initialization
-             */
+            /** End Variable Initialization */
         }
 
         function StyleRuleTracker(styleRuleLink){
-            /**
-             * Begin Private Methods
-             */
+            /** Begin Private Methods */
 
             function addElements(testElements){
                 while (testElements.length > 0){
@@ -539,22 +455,13 @@ function CSSBreakout() {
                 }
             }
 
-            /**
-             * End Private Methods
-             */
+            /** End Private Methods */
 
-            /**
-             * Begin Constructors
-             */
+            /** Begin Constructors */
 
+            /** End Constructors */
 
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
+            /** Begin Public Methods */
 
             this.findSelectedElements = function(elementTree){
                 for (var selectorIndex = this.selectors.length - 1 ; selectorIndex >= 0 ; selectorIndex--){
@@ -582,13 +489,9 @@ function CSSBreakout() {
                 return output;
             };
 
-            /**
-             * End Public Methods
-             */
+            /** End Public Methods */
 
-            /**
-             * Begin Variable Initialization
-             */
+            /** Begin Variable Initialization */
 
             var rule = this;
             this.link = styleRuleLink;
@@ -603,9 +506,7 @@ function CSSBreakout() {
             }
             this.elements = [];
 
-            /**
-             * End Variable Initialization
-             */
+            /** End Variable Initialization */
         }
 
 
@@ -613,9 +514,7 @@ function CSSBreakout() {
         if (options.preserveMediaQueries){
 
             var SupportsRuleTracker = function(supportsRuleLink){
-                /**
-                 * Begin Private Methods
-                 */
+                /** Begin Private Methods */
 
                 function addRulesToList(originalRulesList, rulesTrackerList){
                     for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
@@ -642,22 +541,13 @@ function CSSBreakout() {
                     }
                 }
 
-                /**
-                 * End Private Methods
-                 */
+                /** End Private Methods */
 
-                /**
-                 * Begin Constructors
-                 */
+                /** Begin Constructors */
 
+                /** End Constructors */
 
-                /**
-                 * End Constructors
-                 */
-
-                /**
-                 * Begin Public Methods
-                 */
+                /** Begin Public Methods */
 
                 this.findSelectedElements = function(elementTree){
                     for (var ruleIndex = this.rules.length - 1; ruleIndex >= 0; ruleIndex--){
@@ -689,13 +579,9 @@ function CSSBreakout() {
                     return output;
                 };
 
-                /**
-                 * End Public Methods
-                 */
+                /** End Public Methods */
 
-                /**
-                 * Begin Variable Initialization
-                 */
+                /** Begin Variable Initialization */
 
                 var supportsRule = this;
                 this.link = supportsRuleLink;
@@ -703,15 +589,11 @@ function CSSBreakout() {
                 this.elements = [];
                 addRulesToList(this.link.cssRules, this.rules);
 
-                /**
-                 * End Variable Initialization
-                 */
+                /** End Variable Initialization */
             };
 
             var MediaRuleTracker = function(mediaRuleLink){
-                /**
-                 * Begin Private Methods
-                 */
+                /** Begin Private Methods */
 
                 function addRulesToList(originalRulesList, rulesTrackerList){
                     for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
@@ -738,22 +620,13 @@ function CSSBreakout() {
                     }
                 }
 
-                /**
-                 * End Private Methods
-                 */
+                /** End Private Methods */
 
-                /**
-                 * Begin Constructors
-                 */
+                /** Begin Constructors */
 
+                /** End Constructors */
 
-                /**
-                 * End Constructors
-                 */
-
-                /**
-                 * Begin Public Methods
-                 */
+                /** Begin Public Methods */
 
                 this.findSelectedElements = function(elementTree){
                     for (var ruleIndex = this.rules.length - 1; ruleIndex >= 0; ruleIndex--){
@@ -785,13 +658,9 @@ function CSSBreakout() {
                     return output;
                 };
 
-                /**
-                 * End Public Methods
-                 */
+                /** End Public Methods */
 
-                /**
-                 * Begin Variable Initialization
-                 */
+                /** Begin Variable Initialization */
 
                 var mediaRule = this;
                 this.link = mediaRuleLink;
@@ -799,16 +668,12 @@ function CSSBreakout() {
                 this.elements = [];
                 addRulesToList(this.link.cssRules, this.rules);
 
-                /**
-                 * End Variable Initialization
-                 */
+                /** End Variable Initialization */
             };
         }
 
         function ImportRuleTracker(importRuleLink){
-            /**
-             * Begin Private Methods
-             */
+            /** Begin Private Methods */
 
             function addElements(testElements){
                 while (testElements.length > 0){
@@ -819,22 +684,13 @@ function CSSBreakout() {
                 }
             }
 
-            /**
-             * End Private Methods
-             */
+            /** End Private Methods */
 
-            /**
-             * Begin Constructors
-             */
+            /** Begin Constructors */
 
+            /** End Constructors */
 
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
+            /** Begin Public Methods */
 
             this.findSelectedElements = function(elementTree){
                 for (var sheetIndex = this.sheets.length - 1; sheetIndex >= 0; sheetIndex--){
@@ -856,13 +712,9 @@ function CSSBreakout() {
                 return output;
             };
 
-            /**
-             * End Public Methods
-             */
+            /** End Public Methods */
 
-            /**
-             * Begin Variable Initialization
-             */
+            /** Begin Variable Initialization */
 
             var sheet = this;
             this.link = importRuleLink;
@@ -874,15 +726,11 @@ function CSSBreakout() {
             }
             this.elements = [];
 
-            /**
-             * End Variable Initialization
-             */
+            /** End Variable Initialization */
         }
 
         function StyleSheetTracker(styleSheetLink){
-            /**
-             * Begin Private Methods
-             */
+            /** Begin Private Methods */
 
             var addRulesToList;
             if (options.preserveMediaQueries){
@@ -936,22 +784,13 @@ function CSSBreakout() {
                 }
             }
 
-            /**
-             * End Private Methods
-             */
+            /** End Private Methods */
 
-            /**
-             * Begin Constructors
-             */
+            /** Begin Constructors */
 
+            /** End Constructors */
 
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
+            /** Begin Public Methods */
 
             this.findSelectedElements = function(elementTree){
                 for (var ruleIndex = this.rules.length - 1; ruleIndex >= 0; ruleIndex--){
@@ -973,13 +812,9 @@ function CSSBreakout() {
                 return output;
             };
 
-            /**
-             * End Public Methods
-             */
+            /** End Public Methods */
 
-            /**
-             * Begin Variable Initialization
-             */
+            /** Begin Variable Initialization */
 
             var sheet = this;
             this.link = styleSheetLink;
@@ -987,18 +822,12 @@ function CSSBreakout() {
             this.elements = [];
             addRulesToList(this.link.rules, this.rules);
 
-            /**
-             * End Variable Initialization
-             */
+            /** End Variable Initialization */
         }
 
-        /**
-         * End Constructors
-         */
+        /** End Constructors */
 
-        /**
-         * Begin Public Methods
-         */
+        /** Begin Public Methods */
 
         this.findSelectedElements = function(elementTree){
             var sheets = sheetList.sheets;
@@ -1026,13 +855,9 @@ function CSSBreakout() {
             }
         };
 
-        /**
-         * End Public Methods
-         */
+        /** End Public Methods */
 
-        /**
-         * Begin Variable Initialization
-         */
+        /** Begin Variable Initialization */
 
         var sheetList = {
             link: document.styleSheets,
@@ -1048,18 +873,12 @@ function CSSBreakout() {
         }
         console.log("Added stylesheet tree: ", sheetList);
 
-        /**
-         * End Variable Initialization
-         */
+        /** End Variable Initialization */
     }
 
-    /**
-     * End Constructors
-     */
+    /** End Constructors */
 
-    /**
-     * Begin Public Methods
-     */
+    /** Begin Public Methods */
 
     /**
      * this.getCSS - returns all css rules and declarations based upon provided option values (if provided) or defaults (if not).
@@ -1097,13 +916,9 @@ function CSSBreakout() {
         return sheets.output(outputOptions);
     };
 
-    /**
-     * End Public Methods
-     */
+    /** End Public Methods */
 
-    /**
-     * Begin Variable Initialization
-     */
+    /** Begin Variable Initialization */
 
     var config = {
         elements: {
@@ -1125,7 +940,5 @@ function CSSBreakout() {
         }
     };
 
-    /**
-     * End Variable Initialization
-     */
+    /** End Variable Initialization */
 }
