@@ -5,7 +5,7 @@
 var elementCSS = new CSSBreakout();
 
 document.addEventListener("DOMContentLoaded", function(){
-    var element = document.getElementById('test').getElementsByTagName('ul')[0];
+    var element = document.getElementById('test');
     var css = elementCSS.getCSS(element, {
         elements: {
             inherited: true,

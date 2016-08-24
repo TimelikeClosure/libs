@@ -805,6 +805,75 @@ function CSSBreakout() {
             };
         }
 
+        function ImportRuleTracker(importRuleLink){
+            /**
+             * Begin Private Methods
+             */
+
+            function addElements(testElements){
+                while (testElements.length > 0){
+                    var testElement = testElements.shift();
+                    if (sheet.elements.indexOf(testElement) < 0 && testElement.addSheet(sheet)){
+                        sheet.elements.push(testElement);
+                    }
+                }
+            }
+
+            /**
+             * End Private Methods
+             */
+
+            /**
+             * Begin Constructors
+             */
+
+
+            /**
+             * End Constructors
+             */
+
+            /**
+             * Begin Public Methods
+             */
+
+            this.findSelectedElements = function(elementTree){
+                for (var sheetIndex = this.sheets.length - 1; sheetIndex >= 0; sheetIndex--){
+                    var rulesElements = this.sheets[sheetIndex].findSelectedElements(elementTree);
+                    if (rulesElements.length > 0){
+                        addElements(rulesElements);
+                    } else {
+                        this.sheets.splice(sheetIndex, 1);
+                    }
+                }
+                return this.elements;
+            };
+
+            this.getCSS = function(){
+                var output = "";
+                for (var index = 0; index < this.sheets.length; index++){
+                    output += this.sheets[index].getCSS();
+                }
+                return output;
+            };
+
+            /**
+             * End Public Methods
+             */
+
+            /**
+             * Begin Variable Initialization
+             */
+
+            var sheet = this;
+            this.link = importRuleLink;
+            this.sheets = [new StyleSheetTracker(this.link.styleSheet)];
+            this.elements = [];
+
+            /**
+             * End Variable Initialization
+             */
+        }
+
         function StyleSheetTracker(styleSheetLink){
             /**
              * Begin Private Methods
@@ -821,6 +890,8 @@ function CSSBreakout() {
                             rulesTrackerList.push(new MediaRuleTracker(rule));
                         } else if (rule instanceof CSSSupportsRule){   //  if rule is a supports rule,
                             rulesTrackerList.push(new SupportsRuleTracker(rule, addRulesToList));
+                        } else if (rule instanceof CSSImportRule){   //  if rule is an import rule,
+                            rulesTrackerList.push(new ImportRuleTracker(rule));
                         } else {
                             //rulesTrackerList.push(null);
                             console.log('Warning, invalid rule type: ', rule);
@@ -841,6 +912,8 @@ function CSSBreakout() {
                             if (CSS.support(rule.conditionText)){ //  and if supports rule is active, add included rules
                                 addRulesToList(rule.cssRules, rulesTrackerList);
                             }
+                        } else if (rule instanceof CSSImportRule){   //  if rule is an import rule,
+                            rulesTrackerList.push(new ImportRuleTracker(rule));
                         } else {
                             rulesTrackerList.push(null);
                             console.log('Warning, invalid rule type: ', rule);
@@ -914,117 +987,6 @@ function CSSBreakout() {
              */
         }
 
-        function ImportRuleTracker(importRuleLink){
-            /**
-             * Begin Private Methods
-             */
-
-            var addRulesToList;
-            if (options.preserveMediaQueries){
-                addRulesToList = function(originalRulesList, rulesTrackerList){
-                    for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
-                        var rule = originalRulesList[ruleIndex];
-                        if (rule instanceof CSSStyleRule){  //  if rule is a style, add tracker for it
-                            rulesTrackerList.push(new StyleRuleTracker(rule));
-                        } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
-                            rulesTrackerList.push(new MediaRuleTracker(rule));
-                        } else if (rule instanceof CSSSupportsRule){   //  if rule is a supports rule,
-                            rulesTrackerList.push(new SupportsRuleTracker(rule, addRulesToList));
-                        } else {
-                            //rulesTrackerList.push(null);
-                            console.log('Warning, invalid rule type: ', rule);
-                        }
-                    }
-                }
-            } else {
-                addRulesToList = function(originalRulesList, rulesTrackerList){
-                    for (var ruleIndex = 0; ruleIndex < originalRulesList.length; ruleIndex++){
-                        var rule = originalRulesList[ruleIndex];
-                        if (rule instanceof CSSStyleRule){  //  if rule is a style, add tracker for it
-                            rulesTrackerList.push(new StyleRuleTracker(rule));
-                        } else if (rule instanceof CSSMediaRule){   //  if rule is a media query,
-                            if (window.matchMedia(rule.media.mediaText).matches){ //  and if media query is active, add included rules
-                                addRulesToList(rule.cssRules, rulesTrackerList);
-                            }
-                        } else if (rule instanceof CSSSupportsRule){   //  if rule is a supports rule,
-                            if (CSS.support(rule.conditionText)){ //  and if supports rule is active, add included rules
-                                addRulesToList(rule.cssRules, rulesTrackerList);
-                            }
-                        } else {
-                            rulesTrackerList.push(null);
-                            console.log('Warning, invalid rule type: ', rule);
-                        }
-                    }
-                }
-            }
-
-            function addElements(testElements){
-                while (testElements.length > 0){
-                    var testElement = testElements.shift();
-                    if (sheet.elements.indexOf(testElement) < 0 && testElement.addSheet(sheet)){
-                        sheet.elements.push(testElement);
-                    }
-                }
-            }
-
-            /**
-             * End Private Methods
-             */
-
-            /**
-             * Begin Constructors
-             */
-
-
-            /**
-             * End Constructors
-             */
-
-            /**
-             * Begin Public Methods
-             */
-
-            this.findSelectedElements = function(elementTree){
-                for (var ruleIndex = this.rules.length - 1; ruleIndex >= 0; ruleIndex--){
-                    var rulesElements = this.rules[ruleIndex].findSelectedElements(elementTree);
-                    if (rulesElements.length > 0){
-                        addElements(rulesElements);
-                    } else {
-                        this.rules.splice(ruleIndex, 1);
-                    }
-                }
-                return this.elements;
-            };
-
-            this.getCSS = function(){
-                var output = "";
-                for (var index = 0; index < this.rules.length; index++){
-                    output += this.rules[index].getCSS();
-                }
-                return output;
-            };
-
-            /**
-             * End Public Methods
-             */
-
-            /**
-             * Begin Variable Initialization
-             */
-
-            var sheet = this;
-            this.link = importRuleLink;
-            this.sheets = [
-                new Style
-            ];
-            this.elements = [];
-            addRulesToList(this.link.rules, this.rules);
-
-            /**
-             * End Variable Initialization
-             */
-        }
-
         /**
          * End Constructors
          */
@@ -1038,14 +1000,14 @@ function CSSBreakout() {
             for (var sheetIndex = sheets.length - 1; sheetIndex >= 0; sheetIndex--){
                 var sheetElements = sheets[sheetIndex].findSelectedElements(elementTree);
                 if (sheetElements.length > 0){
-                    console.log("sheet kept: ", sheets[sheetIndex]);
+                   // console.log("sheet kept: ", sheets[sheetIndex]);
                     addElements(sheetElements);
                 } else {
-                    console.log("sheet spliced: ", sheets[sheetIndex]);
+                    //console.log("sheet spliced: ", sheets[sheetIndex]);
                     sheets.splice(sheetIndex, 1);
                 }
             }
-            console.log("Trimmed stylesheet tree: ", sheetList);
+            //console.log("Trimmed stylesheet tree: ", sheetList);
         };
 
         this.output = function(outputOptions){
